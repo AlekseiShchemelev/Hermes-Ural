@@ -80,7 +80,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Ферротрейд",
-      "certificate": "./inox/04Х19Н9-4,0.pdf",
+      "certificate": "./inox/04х19н9-4,0.pdf",
       "issueDate": "12.09.2027",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -92,7 +92,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Ферротрейд",
-      "certificate": "./inox/06Х19Н9Т-4,0.pdf",
+      "certificate": "./inox/06х19н9т-4,0.pdf",
       "issueDate": "17.07.2028",
       "description": "Автоматическая сварка под флюсом"
     },
