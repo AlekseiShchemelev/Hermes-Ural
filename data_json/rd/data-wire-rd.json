@@ -1,0 +1,40 @@
+{
+  "wireDataRD": [
+    {
+      "id": 1,
+      "brand": "УОНИИ-13/55",
+      "type": "Э50А",
+      "method": "RD",
+      "diameter": "3,0",
+      "standard": "ГОСТ 9466-75, ГОСТ 9467-75",
+      "manufacturer": "СЗСМ",
+      "certificate": "carbon/уонии-13-55-3,0.pdf",
+      "issueDate": "10.01.2028",
+      "description": "Ручная дуговая сварка"
+    },
+    {
+      "id": 2,
+      "brand": "ОЗЛ-36",
+      "type": "Э-04Х20Н9",
+      "method": "RD",
+      "diameter": "4,0",
+      "standard": "ГОСТ 9466-75, ГОСТ 10052-75",
+      "manufacturer": "Волгодонский электродный завод",
+      "certificate": "carbon/озл-36-4,0.pdf",
+      "issueDate": "17.10.2027",
+      "description": "Ручная дуговая сварка"
+    },
+    {
+      "id": 3,
+      "brand": "ЦТ-15",
+      "type": "Э-08Х19Н10Г2Б",
+      "method": "RD",
+      "diameter": "3,0",
+      "standard": "ГОСТ 9466-75, ГОСТ 10052-75",
+      "manufacturer": "СЗСМ",
+      "certificate": "carbon/цт-15-3,0.pdf",
+      "issueDate": "17.10.2027",
+      "description": "Ручная дуговая сварка"
+    }
+  ]
+}

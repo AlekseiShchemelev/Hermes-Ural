@@ -1,0 +1,112 @@
+{
+  "wireDataAF": [
+    {
+      "id": 1,
+      "brand": "Св-10НМА",
+      "type": "Св-10НМА",
+      "method": "AF",
+      "diameter": "3,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "Северсталь",
+      "certificate": "carbon/10нма-3,0.pdf",
+      "issueDate": "07.10.2025",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 2,
+      "brand": "Св-10НМА",
+      "type": "Св-10НМА",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "Северсталь",
+      "certificate": "carbon/10нма-4,0.pdf",
+      "issueDate": "06.03.2028",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 3,
+      "brand": "Св-08ГА",
+      "type": "Св-08ГА",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "ЧЗСМ",
+      "certificate": "carbon/08га-4,0.pdf",
+      "issueDate": "09.03.2026",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 4,
+      "brand": "AG ER 318",
+      "type": "Св-08Х19Н10М3Б",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ТУ 1222-002-2945213-2016",
+      "manufacturer": "Superon Schweisstechnik India Ltd",
+      "certificate": "inox/ag-er-318- 4,0.pdf",
+      "issueDate": "26.01.2027",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 5,
+      "brand": "Autrod 316L",
+      "type": "Св-01Х17Н14М2",
+      "method": "AF",
+      "diameter": "3,2",
+      "standard": "ТУ 25.93.15-339-55224353-2024",
+      "manufacturer": "ESAB",
+      "certificate": "inox/autrod-316l-3,2.pdf",
+      "issueDate": "26.01.2027",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 6,
+      "brand": "AG ER 308L",
+      "type": "Св-01Х18Н10",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ТУ 1222-002-02945213-2016",
+      "manufacturer": "AlfaGlobal",
+      "certificate": "inox/ag-er-308l-4,0.pdf",
+      "issueDate": "20.12.2026",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 7,
+      "brand": "Св-04Х19Н9",
+      "type": "Св-04Х19Н9",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "Ферротрейд",
+      "certificate": "inox/04х19н9-4,0.pdf",
+      "issueDate": "12.09.2027",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 8,
+      "brand": "Св-06Х19Н9Т",
+      "type": "Св-06Х19Н9Т",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "Ферротрейд",
+      "certificate": "inox/06Х19Н9Т-4,0.pdf",
+      "issueDate": "17.07.2028",
+      "description": "Автоматическая сварка под флюсом"
+    },
+    {
+      "id": 9,
+      "brand": "Св-07Х19Н10Б",
+      "type": "Св-07Х19Н10Б",
+      "method": "AF",
+      "diameter": "4,0",
+      "standard": "ГОСТ 2246-70",
+      "manufacturer": "Спарк",
+      "certificate": "inox/07Х19Н10Б-4,0.pdf",
+      "issueDate": "21.07.2026",
+      "description": "Автоматическая сварка под флюсом"
+    }
+  ]
+}

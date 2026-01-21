@@ -1,0 +1,103 @@
+@startuml Registry Application - Sequence Diagram (Инициализация)
+
+title Инициализация приложения
+
+actor "Пользователь" as User
+participant "DOM" as DOM
+participant "Application" as App
+participant "CommonUtils" as Common
+participant "SectionManager" as Section
+participant "WireManager" as Wire
+participant "WeldersManager" as Welders
+participant "SpecialistsManager" as Specialists
+participant "TechprocessManager" as Tech
+participant "FileServer" as FileServer
+participant "BackupManager" as Backup
+
+== Событие: Загрузка страницы ==
+User -> DOM: Загрузка страницы
+DOM -> App: DOMContentLoaded
+
+activate App
+
+App -> App: Проверка состояния
+note right: Если _initialized = true\nпропускаем инициализацию
+
+App -> Common: showNotification("Начало инициализации...")
+App -> Section: _initBasicModules()
+Section --> App: Модуль инициализирован
+App -> AdminManager: Ссылка сохранена
+
+App -> App: _initDataModules()
+
+alt Элементы проволоки существуют
+    App -> Wire: init()
+    activate Wire
+    Wire -> Wire: initElements()
+    Wire -> Wire: initEventListeners()
+    Wire -> Wire: loadWireData()
+    Wire -> FileServer: loadJSONFile()
+    FileServer --> Wire: Данные
+    Wire -> Wire: setupDiameterOptions()
+    Wire -> Common: showNotification("Данные загружены")
+    deactivate Wire
+end
+
+alt Элементы сварщиков существуют
+    App -> Welders: init()
+    activate Welders
+    Welders -> Welders: initElements()
+    Welders -> Welders: loadWeldingData()
+    Welders -> FileServer: loadJSONFile()
+    FileServer --> Welders: Данные
+    Welders -> Common: showNotification("Данные загружены")
+    deactivate Welders
+end
+
+alt Элементы специалистов существуют
+    App -> Specialists: init()
+    activate Specialists
+    Specialists -> Specialists: initElements()
+    Specialists -> Specialists: loadSpecialistsData()
+    Specialists -> FileServer: loadJSONFile()
+    FileServer --> Specialists: Данные
+    Specialists -> Common: showNotification("Данные загружены")
+    deactivate Specialists
+end
+
+alt Элементы техпроцессов существуют
+    App -> Tech: init()
+    activate Tech
+    Tech -> Tech: initElements()
+    Tech -> Tech: loadTechprocessData()
+    Tech -> Tech: setupCategoryOptions()
+    Tech -> FileServer: loadJSONFile()
+    FileServer --> Tech: Данные
+    Tech -> Common: showNotification("Данные загружены")
+    deactivate Tech
+end
+
+App -> App: _initServerModules()
+App -> FileServer: Инициализация
+FileServer --> App: Готов
+App -> Backup: init()
+activate Backup
+Backup -> Backup: _loadBackupRegistry()
+Backup -> Backup: _loadCommitRegistry()
+Backup --> App: Готов
+deactivate Backup
+
+App -> Section: _setupGlobalNavigation()
+App -> FileServer: checkFilesAvailability()
+FileServer -> FileServer: listFiles()
+
+alt Файлы не найдены
+    App -> FileServer: initializeTestData()
+    FileServer -> FileServer: Создание тестовых данных
+    FileServer -> FileServer: saveJSONFile()
+end
+
+App -> Common: showNotification("Приложение инициализировано")
+deactivate App
+
+@enduml

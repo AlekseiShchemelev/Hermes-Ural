@@ -1,0 +1,61 @@
+@startuml Registry Application - Sequence Diagram (Поиск проволоки)
+
+title Поиск проволоки
+
+actor "Пользователь" as User
+participant "UI (HTML)" as UI
+participant "WireManager" as Wire
+participant "CommonUtils" as Common
+participant "FileServer" as FileServer
+
+== Событие: Пользователь выбирает параметры поиска ==
+
+User -> UI: Выбор категории проволоки
+UI -> Wire: wireCategorySelect.value = "MMA"
+
+User -> UI: Выбор способа сварки
+UI -> Wire: weldingMethodSelect.value = "MMA"
+activate Wire
+Wire -> Wire: _updateDiameterOptions("MMA")
+Wire -> UI: Обновление списка диаметров
+deactivate Wire
+
+User -> UI: Выбор диаметра
+UI -> Wire: wireDiameterSelect.value = "2.5"
+
+== Событие: Нажатие кнопки "Поиск" ==
+
+User -> UI: Нажатие "searchBtn"
+UI -> Wire: performSearch()
+activate Wire
+
+Wire -> Common: showNotification("Выполняется поиск...", "info")
+
+Wire -> Wire: getCurrentFilters()
+note right: {category: "MMA", method: "MMA", diameter: "2.5"}
+
+Wire -> FileServer: loadJSONFile("wire/data.json")
+activate FileServer
+FileServer -> FileServer: Проверка localStorage
+FileServer --> Wire: [Данные проволоки]
+deactivate FileServer
+
+Wire -> Wire: Фильтрация данных
+note right: Применение фильтров к данным
+
+Wire -> Wire: _currentFilteredData = Отфильтрованные данные
+
+Wire -> Wire: _displayResults()
+alt Есть результаты
+    Wire -> UI: resultsCount.textContent = количество
+    Wire -> UI: noResults.style.display = 'none'
+    Wire -> UI: Отрисовка таблицы
+else Нет результатов
+    Wire -> UI: resultsCount.textContent = "0"
+    Wire -> UI: noResults.style.display = 'block'
+end
+
+Wire -> Common: showNotification("Результаты отображены", "success")
+deactivate Wire
+
+@enduml

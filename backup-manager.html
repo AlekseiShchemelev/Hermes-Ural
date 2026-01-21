@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Управление резервными копиями</title>
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .backup-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .backup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #3498db;
+      }
+
+      .backup-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .backup-list {
+        display: grid;
+        gap: 15px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+
+      .empty-state i {
+        font-size: 48px;
+        margin-bottom: 20px;
+        color: #bdc3c7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backup-container">
+      <div class="backup-header">
+        <h1><i class="fas fa-database"></i> Управление резервными копиями</h1>
+        <div class="backup-actions">
+          <button
+            onclick="window.location.href='admin.html'"
+            class="btn-secondary"
+          >
+            <i class="fas fa-arrow-left"></i> Назад в админку
+          </button>
+          <button onclick="createBackup()" class="btn-primary">
+            <i class="fas fa-plus"></i> Создать бэкап
+          </button>
+          <button onclick="importBackup()" class="btn-info">
+            <i class="fas fa-upload"></i> Импортировать
+          </button>
+        </div>
+      </div>
+
+      <div class="backup-stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Всего бэкапов</h3>
+            <div class="stat-number" id="total-backups">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-hdd"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Общий размер</h3>
+            <div class="stat-number" id="total-size">0 KB</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-calendar"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Последний бэкап</h3>
+            <div class="stat-number" id="last-backup">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="backup-list" id="backup-list">
+        <!-- Список бэкапов будет загружен динамически -->
+      </div>
+    </div>
+
+    <script src="js/backup-manager.js"></script>
+    <script>
+      let backupManager;
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        backupManager = new BackupManager();
+        await loadBackups();
+      });
+
+      async function loadBackups() {
+        const list = document.getElementById("backup-list");
+        const backups = backupManager.backupHistory;
+
+        if (backups.length === 0) {
+          list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <h3>Нет резервных копий</h3>
+                        <p>Создайте свою первую резервную копию данных</p>
+                        <button onclick="createBackup()" class="btn-primary">
+                            <i class="fas fa-plus"></i> Создать бэкап
+                        </button>
+                    </div>
+                `;
+          return;
+        }
+
+        // Обновляем статистику
+        document.getElementById("total-backups").textContent = backups.length;
+        document.getElementById("last-backup").textContent = new Date(
+          backups[0].timestamp
+        ).toLocaleString();
+
+        // Отображаем список бэкапов
+        list.innerHTML = backups
+          .map(
+            (backup) => `
+                <div class="backup-item">
+                    <div class="backup-info">
+                        <h4>${backup.description}</h4>
+                        <p><i class="fas fa-calendar"></i> ${new Date(
+                          backup.timestamp
+                        ).toLocaleString()}</p>
+                        <p><i class="fas fa-info-circle"></i> Записей: ${
+                          backup.data.metadata?.totalRecords || "N/A"
+                        }</p>
+                    </div>
+                    <div class="backup-actions">
+                        <button onclick="restoreBackup(${
+                          backup.id
+                        })" class="btn-success">
+                            <i class="fas fa-undo"></i> Восстановить
+                        </button>
+                        <button onclick="downloadBackup(${
+                          backup.id
+                        })" class="btn-info">
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                        <button onclick="deleteBackup(${
+                          backup.id
+                        })" class="btn-danger">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      async function createBackup() {
+        const description = prompt("Введите описание бэкапа:");
+        if (description) {
+          await backupManager.createBackup(description);
+          await loadBackups();
+        }
+      }
+
+      function importBackup() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+
+        input.onchange = async function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            try {
+              const backup = await backupManager.loadBackupFromFile(file);
+
+              if (confirm("Сохранить этот бэкап в историю?")) {
+                backupManager.backupHistory.unshift(backup);
+                localStorage.setItem(
+                  "backupHistory",
+                  JSON.stringify(backupManager.backupHistory)
+                );
+                await loadBackups();
+                alert("Бэкап успешно импортирован!");
+              }
+            } catch (error) {
+              alert("Ошибка импорта: " + error.message);
+            }
+          }
+        };
+
+        input.click();
+      }
+
+      async function restoreBackup(id) {
+        if (confirm("Восстановить данные из этого бэкапа?")) {
+          await backupManager.restoreFromBackup(id);
+        }
+      }
+
+      function downloadBackup(id) {
+        const backup = backupManager.backupHistory.find((b) => b.id === id);
+        if (backup) {
+          backupManager.saveBackupToFile(backup);
+        }
+      }
+
+      function deleteBackup(id) {
+        if (confirm("Удалить этот бэкап?")) {
+          backupManager.backupHistory = backupManager.backupHistory.filter(
+            (b) => b.id !== id
+          );
+          localStorage.setItem(
+            "backupHistory",
+            JSON.stringify(backupManager.backupHistory)
+          );
+          loadBackups();
+        }
+      }
+    </script>
+  </body>
+</html>

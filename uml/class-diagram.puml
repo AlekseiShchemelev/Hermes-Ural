@@ -1,0 +1,236 @@
+@startuml Registry Application - UML Class Diagram
+
+' === ПАКЕТ: Common (Общие утилиты) ===
+package "Common (Общие утилиты)" {
+  class CommonUtils {
+    + showNotification(message: string, type: string): void
+    + getCurrentDate(): string
+    + downloadJSONFile(jsonString: string, filename: string): void
+    + commitChanges(dataType: string): string
+  }
+
+  class SectionManager {
+    + showSection(sectionName: string): void
+  }
+
+  enum DATA_TYPES {
+    WIRE
+    WELDERS
+    SPECIALISTS
+    TECHPROCESS
+  }
+}
+
+' === ПАКЕТ: Data Modules (Модули данных) ===
+package "Data Modules (Модули данных)" {
+
+  ' --- Wire Manager ---
+  class WireManager {
+    - _currentFilteredData: Array
+    - _elements: Object
+    - _diameterOptions: Object
+    + init(): void
+    + initElements(): void
+    + initEventListeners(): void
+    + loadWireData(): Promise
+    + performSearch(): void
+    + resetFilters(): void
+    + generatePDF(): void
+    + getFilteredData(): Array
+    + getCurrentFilters(): Object
+    - _updateDiameterOptions(method: string): void
+    - _displayResults(): void
+  }
+
+  ' --- Welders Manager ---
+  class WeldersManager {
+    - _currentFilteredData: Array
+    - _elements: Object
+    + init(): void
+    + initElements(): void
+    + initEventListeners(): void
+    + loadWeldingData(): Promise
+    + performSearch(): void
+    + generatePDF(): void
+    + editWelder(fio: string, category: string, index: int): void
+    + deleteWelder(fio: string, category: string, index: int): void
+    + getFilteredData(): Array
+    + getCurrentWeldingType(): string
+    - _displayResults(): void
+    - _onWeldingTypeChange(): void
+  }
+
+  ' --- Specialists Manager ---
+  class SpecialistsManager {
+    - _currentFilteredData: Array
+    - _elements: Object
+    + init(): void
+    + initElements(): void
+    + initEventListeners(): void
+    + loadSpecialistsData(): Promise
+    + performSearch(): void
+    + generatePDF(): void
+    + editSpecialist(fio: string, index: int): void
+    + deleteSpecialist(fio: string, index: int): void
+    + updateSpecialistsStats(): void
+    + getFilteredData(): Array
+    + getCurrentSpecialist(): string
+    - _displayResults(): void
+    - _onSpecialistChange(): void
+  }
+
+  ' --- Techprocess Manager ---
+  class TechprocessManager {
+    - _currentFilteredData: Array
+    - _elements: Object
+    - _categoryOptions: Object
+    + init(): void
+    + initElements(): void
+    + initEventListeners(): void
+    + loadTechprocessData(): Promise
+    + performSearch(): void
+    + generatePDF(): void
+    + editTechprocess(category: string, index: int): void
+    + deleteTechprocess(category: string, index: int): void
+    + updateTechprocessStats(): void
+    + filterTechprocessRecords(): void
+    + getCategoryName(method: string): string
+    + getFilteredData(): Array
+    + getCurrentWeldingType(): string
+    + getAvailableCategories(): Array
+    - _displayResults(): void
+    - _onWeldingTypeChange(): void
+    - setupCategoryOptions(): void
+  }
+}
+
+' === ПАКЕТ: Server Services (Сервисы) ===
+package "Server Services (Сервисы)" {
+
+  class FileServer {
+    - _basePath: string
+    - _delayMs: int
+    + saveJSONFile(path: string, data: Object): Promise
+    + loadJSONFile(path: string): Promise
+    + deleteFile(path: string): Promise
+    + listFiles(directory: string): Promise
+    + initializeTestData(): Promise
+    + createFullBackup(): Promise
+    + restoreFromBackup(backupData: Object): Promise
+    + checkFilesAvailability(): Promise
+    - _delay(ms: int): Promise
+  }
+
+  class BackupManager {
+    - _backupStorageKey: string
+    - _commitsStorageKey: string
+    - _maxBackups: int
+    + init(): void
+    + createBackup(description: string): Promise
+    + restoreFromBackup(backupId: string): Promise
+    + loadBackupFromFile(file: File): Promise
+    + saveBackupToFile(backup: Object): void
+    + createCommit(message: string): Object
+    + getCurrentChanges(): Object
+    + calculateTotalRecords(): int
+    + getBackupList(): Array
+    + getCommitHistory(): Array
+    + deleteBackup(backupId: string): Promise
+    - _generateBackupId(): string
+    - _generateCommitId(): string
+    - _calculateTotalRecords(data: Object): int
+    - _readFileAsText(file: File): Promise
+    - _loadBackupRegistry(): Array
+    - _loadCommitRegistry(): Array
+    - _saveBackup(backup: Object): Promise
+    - _loadBackup(backupId: string): Object
+  }
+}
+
+' === ПАКЕТ: Core (Ядро приложения) ===
+package "Core (Ядро приложения)" {
+
+  class Application {
+    - _modules: Object
+    - _initialized: boolean
+    + init(): Promise
+    + getModule(moduleName: string): Object
+    + getAllModules(): Object
+    + reloadModule(moduleName: string): Promise
+    + isInitialized(): boolean
+    - _initBasicModules(): void
+    - _initDataModules(): Promise
+    - _initServerModules(): Promise
+    - _setupGlobalNavigation(): void
+    - _initTestData(): Promise
+  }
+}
+
+' === ПАКЕТ: Admin (Модуль администрирования) ===
+package "Admin (Администрирование)" {
+
+  class AdminManager {
+    + loadData(): Promise
+    + loadAllData(): void
+    + loadTable(): void
+    + updateStats(): void
+    + showSection(sectionName: string): void
+    + selectDataType(dataType: string): void
+    + createBackup(): Promise
+    + saveData(dataType: string): void
+    + deleteRecord(id: string, dataType: string): void
+    + editRecord(id: string, dataType: string): void
+    + filterRecords(): void
+    + exportData(dataType: string): void
+    + exportAllData(): void
+    + importData(event: Event): void
+    + importAllData(event: Event): void
+    + commitChanges(dataType: string): void
+    + checkFilesAvailability(): Promise
+    + getWelderCategoryName(method: string): string
+    + getTechprocessCategoryName(method: string): string
+    + getMethodDisplay(method: string): string
+    + updateWireStats(): void
+    + updateWeldersStats(): void
+    + updateSpecialistsStats(): void
+    + updateTechprocessStats(): void
+    + filterWireRecords(): void
+    + filterWeldersRecords(): void
+    + filterSpecialistsRecords(): void
+    + filterTechprocessRecords(): void
+  }
+}
+
+' === СВЯЗИ ===
+
+' Связи Application с другими модулями
+Application "1" --> "1" CommonUtils : использует
+Application "1" --> "1" SectionManager : использует
+Application "1" --> "1" AdminManager : содержит
+Application "1" --> "1" WireManager : содержит
+Application "1" --> "1" WeldersManager : содержит
+Application "1" --> "1" SpecialistsManager : содержит
+Application "1" --> "1" TechprocessManager : содержит
+Application "1" --> "1" FileServer : содержит
+Application "1" --> "1" BackupManager : содержит
+
+' Data Managers используют CommonUtils
+WireManager ..> CommonUtils : зависит
+WeldersManager ..> CommonUtils : зависит
+SpecialistsManager ..> CommonUtils : зависит
+TechprocessManager ..> CommonUtils : зависит
+
+' Data Managers используют DATA_TYPES
+WireManager ..> DATA_TYPES : зависит
+WeldersManager ..> DATA_TYPES : зависит
+SpecialistsManager ..> DATA_TYPES : зависит
+TechprocessManager ..> DATA_TYPES : зависит
+
+' BackupManager использует FileServer
+BackupManager "1" --> "1" FileServer : использует
+FileServer ..> CommonUtils : зависит
+
+' AdminManager использует CommonUtils
+AdminManager ..> CommonUtils : зависит
+
+@enduml

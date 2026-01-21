@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ панель - Реестр сварочной проволоки</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- Боковая панель -->
+      <div class="admin-sidebar">
+        <div class="sidebar-header">
+          <h2>
+            <i class="fas fa-tools"></i>
+            Админ панель
+          </h2>
+        </div>
+
+        <div class="sidebar-nav">
+          <!-- Навигация по типам данных -->
+          <div class="data-type-nav">
+            <h3>Типы данных</h3>
+            <button
+              onclick="selectDataType('wire')"
+              id="wire-btn"
+              class="nav-btn active"
+            >
+              <i class="fas fa-coil"></i>
+              Проволока
+            </button>
+            <button
+              onclick="selectDataType('welders')"
+              id="welders-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-user-hard-hat"></i>
+              Сварщики
+            </button>
+            <button
+              onclick="selectDataType('specialists')"
+              id="specialists-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-user-tie"></i>
+              Специалисты
+            </button>
+            <button
+              onclick="selectDataType('techprocess')"
+              id="techprocess-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-cogs"></i>
+              Техпроцессы
+            </button>
+          </div>
+
+          <!-- Навигация по функциям -->
+          <div class="function-nav">
+            <h3>Функции</h3>
+            <button
+              onclick="showSection('overview')"
+              id="overview-btn"
+              class="nav-btn active"
+            >
+              <i class="fas fa-chart-bar"></i>
+              Обзор
+            </button>
+            <button onclick="showSection('add')" id="add-btn" class="nav-btn">
+              <i class="fas fa-plus"></i>
+              Добавить
+            </button>
+            <button
+              onclick="showSection('manage')"
+              id="manage-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-edit"></i>
+              Управлять
+            </button>
+            <button
+              onclick="showSection('import')"
+              id="import-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-exchange-alt"></i>
+              Импорт/Экспорт
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Основной контент -->
+      <div class="admin-main">
+        <!-- Шапка -->
+        <div class="admin-header">
+          <div class="header-left">
+            <h1>
+              <i class="fas fa-tools"></i>
+              Админ панель - Управление данными
+            </h1>
+          </div>
+          <div class="header-actions">
+            <button
+              onclick="window.location.href='index.html'"
+              class="action-btn back-btn"
+            >
+              <i class="fas fa-home"></i>
+              На главную
+            </button>
+            <button onclick="clearAllData()" class="action-btn danger-btn">
+              <i class="fas fa-trash"></i>
+              Очистить все
+            </button>
+          </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="admin-content">
+          <!-- Обзор для проволоки -->
+          <div id="wire-overview-section" class="hidden-section active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-coil"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Всего проволоки</h3>
+                  <div class="stat-number" id="wire-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>МП (Полуавтоматическая)</h3>
+                  <div class="stat-number" id="wire-mp-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-industry"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>АФ (Автоматическая под флюсом)</h3>
+                  <div class="stat-number" id="wire-af-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>РАД (Аргонодуговая)</h3>
+                  <div class="stat-number" id="wire-rad-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-hand-paper"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>РД (Ручная дуговая)</h3>
+                  <div class="stat-number" id="wire-rd-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные сертификаты</h3>
+                  <div class="stat-number" id="wire-expired-count">0</div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Обзор для сварщиков -->
+          <div id="welders-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-user-hard-hat"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Всего сварщиков</h3>
+                  <div class="stat-number" id="welders-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Активных</h3>
+                  <div class="stat-number" id="welders-active-count">0</div>
+                  <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    Все в порядке
+                  </div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченных</h3>
+                  <div class="stat-number" id="welders-expired-count">0</div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Обзор для специалистов -->
+          <div id="specialists-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Всего специалистов</h3>
+                  <div class="stat-number" id="specialists-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-medal"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>III уровень</h3>
+                  <div class="stat-number" id="specialists-level3-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="specialists-expired-count">
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Обзор для техпроцессов -->
+          <div id="techprocess-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Всего техпроцессов</h3>
+                  <div class="stat-number" id="techprocess-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="techprocess-expired-count">
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i>
+                    Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Форма добавления проволоки -->
+          <div id="wire-add-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-plus"></i>
+                Добавить проволоку
+              </h2>
+              <form id="wire-add-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Марка проволоки *</label>
+                    <input
+                      type="text"
+                      id="wire-add-brand"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Тип *</label>
+                    <input
+                      type="text"
+                      id="wire-add-type"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Способ сварки *</label>
+                    <select id="wire-add-method" class="form-control" required>
+                      <option value="">-- Выберите способ --</option>
+                      <option value="MP">МП - полуавтоматическая</option>
+                      <option value="RAD">РАД - ручная аргонодуговая</option>
+                      <option value="AF">АФ - автоматическая под флюсом</option>
+                      <option value="RD">РД - ручная дуговая</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Диаметр (мм) *</label>
+                    <input
+                      type="text"
+                      id="wire-add-diameter"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>ГОСТ/ТУ *</label>
+                    <input
+                      type="text"
+                      id="wire-add-standard"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Производитель *</label>
+                    <input
+                      type="text"
+                      id="wire-add-manufacturer"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Путь к сертификату</label>
+                  <input
+                    type="text"
+                    id="wire-add-certificate"
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Дата выдачи</label>
+                  <input
+                    type="text"
+                    id="wire-add-issueDate"
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Описание</label>
+                  <textarea
+                    id="wire-add-description"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-save"></i>
+                  Добавить проволоку
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Форма добавления сварщика -->
+          <div id="welders-add-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-plus"></i>
+                Добавить сварщика
+              </h2>
+              <form id="welders-add-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>ФИО *</label>
+                    <input
+                      type="text"
+                      id="welders-add-fio"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Клеймо *</label>
+                    <input
+                      type="text"
+                      id="welders-add-stamp"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Толщина (мм) *</label>
+                    <input
+                      type="text"
+                      id="welders-add-thickness"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Действует до *</label>
+                    <input
+                      type="text"
+                      id="welders-add-validUntil"
+                      class="form-control"
+                      placeholder="ДД-ММ-ГГГГ"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Тип материала *</label>
+                    <input
+                      type="text"
+                      id="welders-add-material"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Изображение сертификата</label>
+                    <input
+                      type="text"
+                      id="welders-add-certificateImage"
+                      class="form-control"
+                      placeholder="./images/9ZFK-23.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Комментарий</label>
+                  <textarea
+                    id="welders-add-comment"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-save"></i>
+                  Добавить сварщика
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Форма добавления специалиста -->
+          <div id="specialists-add-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-plus"></i>
+                Добавить специалиста
+              </h2>
+              <form id="specialists-add-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>ФИО *</label>
+                    <input
+                      type="text"
+                      id="specialists-add-fio"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Сертификат *</label>
+                    <input
+                      type="text"
+                      id="specialists-add-cert"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Группа (аббревиатура) *</label>
+                    <input
+                      type="text"
+                      id="specialists-add-groupAbr"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Группа *</label>
+                    <select
+                      id="specialists-add-group"
+                      class="form-control"
+                      required
+                    >
+                      <option value="">-- Выберите уровень --</option>
+                      <option value="I уровень">I уровень</option>
+                      <option value="II уровень">II уровень</option>
+                      <option value="III уровень">III уровень</option>
+                      <option value="IV уровень">IV уровень</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Действует до *</label>
+                    <input
+                      type="text"
+                      id="specialists-add-validUntil"
+                      class="form-control"
+                      placeholder="ДД-ММ-ГГГГ"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Ссылка на сертификат</label>
+                  <input
+                    type="text"
+                    id="specialists-add-certificateLink"
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Комментарий</label>
+                  <textarea
+                    id="specialists-add-comment"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-save"></i>
+                  Добавить специалиста
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Форма добавления техпроцесса -->
+          <div id="techprocess-add-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-plus"></i>
+                Добавить техпроцесс
+              </h2>
+              <form id="techprocess-add-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Сертификат *</label>
+                    <input
+                      type="text"
+                      id="techprocess-add-cert"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Группа (аббревиатура) *</label>
+                    <input
+                      type="text"
+                      id="techprocess-add-groupAbr"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Группа *</label>
+                    <input
+                      type="text"
+                      id="techprocess-add-group"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Действует до *</label>
+                    <input
+                      type="text"
+                      id="techprocess-add-validUntil"
+                      class="form-control"
+                      placeholder="ДД-ММ-ГГГГ"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Тип материала *</label>
+                    <input
+                      type="text"
+                      id="techprocess-add-material"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Способ сварки *</label>
+                    <select
+                      id="techprocess-add-method"
+                      class="form-control"
+                      required
+                    >
+                      <option value="">-- Выберите способ --</option>
+                      <option value="Ручная дуговая сварка">
+                        Ручная дуговая сварка
+                      </option>
+                      <option value="Ручная аргонодуговая сварка">
+                        Ручная аргонодуговая сварка
+                      </option>
+                      <option value="Полуавтоматическая сварка">
+                        Полуавтоматическая сварка
+                      </option>
+                      <option value="Автоматическая сварка под слоем флюса">
+                        Автоматическая сварка под слоем флюса
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Ссылка на сертификат</label>
+                  <input
+                    type="text"
+                    id="techprocess-add-certificateLink"
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Комментарий</label>
+                  <textarea
+                    id="techprocess-add-comment"
+                    class="form-control"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-save"></i>
+                  Добавить техпроцесс
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Таблица управления проволокой -->
+          <div id="wire-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-edit"></i>
+                Управление проволокой
+              </h2>
+              <div class="form-group">
+                <label>Фильтр по способу сварки:</label>
+                <select
+                  id="wire-filter-method"
+                  class="form-control"
+                  onchange="filterWireRecords()"
+                >
+                  <option value="">Все способы</option>
+                  <option value="MP">МП - полуавтоматическая</option>
+                  <option value="RAD">РАД - ручная аргонодуговая</option>
+                  <option value="AF">АФ - автоматическая под флюсом</option>
+                  <option value="RD">РД - ручная дуговая</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <div class="table-header">
+                <h2>
+                  <i class="fas fa-table"></i>
+                  Список проволоки
+                </h2>
+              </div>
+              <div class="table-responsive">
+                <table id="wire-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Марка</th>
+                      <th>Тип</th>
+                      <th>Способ</th>
+                      <th>Диаметр</th>
+                      <th>Производитель</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="wire-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Таблица управления сварщиками -->
+          <div id="welders-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-edit"></i>
+                Управление сварщиками
+              </h2>
+              <div class="form-group">
+                <label>Фильтр по типу сварки:</label>
+                <select
+                  id="welders-filter-method"
+                  class="form-control"
+                  onchange="filterWeldersRecords()"
+                >
+                  <option value="">Все типы</option>
+                  <option value="Автоматическая сварка">
+                    Автоматическая сварка
+                  </option>
+                  <option value="Ручная дуговая">Ручная дуговая</option>
+                  <option value="Полуавтоматическая сварка">
+                    Полуавтоматическая сварка
+                  </option>
+                  <option value="Аргонодуговая сварка">
+                    Аргонодуговая сварка
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <div class="table-header">
+                <h2>
+                  <i class="fas fa-table"></i>
+                  Список сварщиков
+                </h2>
+              </div>
+              <div class="table-responsive">
+                <table id="welders-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ФИО</th>
+                      <th>Клеймо</th>
+                      <th>Толщина</th>
+                      <th>Действует до</th>
+                      <th>Материал</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="welders-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Таблица управления специалистами -->
+          <div id="specialists-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-edit"></i>
+                Управление специалистами
+              </h2>
+            </div>
+            <div class="table-container">
+              <div class="table-header">
+                <h2>
+                  <i class="fas fa-table"></i>
+                  Список специалистов
+                </h2>
+              </div>
+              <div class="table-responsive">
+                <table id="specialists-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ФИО</th>
+                      <th>Сертификат</th>
+                      <th>Группа</th>
+                      <th>Уровень</th>
+                      <th>Действует до</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="specialists-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Таблица управления техпроцессами -->
+          <div id="techprocess-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-edit"></i>
+                Управление техпроцессами
+              </h2>
+              <div class="form-group">
+                <label>Фильтр по способу сварки:</label>
+                <select
+                  id="techprocess-filter-method"
+                  class="form-control"
+                  onchange="filterTechprocessRecords()"
+                >
+                  <option value="">Все способы</option>
+                  <option value="Ручная дуговая сварка">
+                    Ручная дуговая сварка
+                  </option>
+                  <option value="Ручная аргонодуговая сварка">
+                    Ручная аргонодуговая сварка
+                  </option>
+                  <option value="Полуавтоматическая сварка">
+                    Полуавтоматическая сварка
+                  </option>
+                  <option value="Автоматическая сварка под слоем флюса">
+                    Автоматическая сварка под слоем флюса
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <div class="table-header">
+                <h2>
+                  <i class="fas fa-table"></i>
+                  Список техпроцессов
+                </h2>
+              </div>
+              <div class="table-responsive">
+                <table id="techprocess-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Сертификат</th>
+                      <th>Группа</th>
+                      <th>Материал</th>
+                      <th>Способ сварки</th>
+                      <th>Действует до</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="techprocess-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Импорт/Экспорт -->
+          <div id="import-section" class="hidden-section">
+            <div class="import-export-grid">
+              <div class="io-card">
+                <h3>
+                  <i class="fas fa-download"></i>
+                  Экспорт данных
+                </h3>
+                <p>Сохраните текущие данные в JSON файл:</p>
+                <div class="io-actions">
+                  <button onclick="exportData('wire')" class="io-btn">
+                    <i class="fas fa-coil"></i>
+                    Экспорт проволоки
+                  </button>
+                  <button onclick="exportData('welders')" class="io-btn">
+                    <i class="fas fa-user-hard-hat"></i>
+                    Экспорт сварщиков
+                  </button>
+                  <button onclick="exportData('specialists')" class="io-btn">
+                    <i class="fas fa-user-tie"></i>
+                    Экспорт специалистов
+                  </button>
+                  <button onclick="exportData('techprocess')" class="io-btn">
+                    <i class="fas fa-cogs"></i>
+                    Экспорт техпроцессов
+                  </button>
+                  <button onclick="exportAllData()" class="io-btn">
+                    <i class="fas fa-box"></i>
+                    Экспорт всех данных
+                  </button>
+                  <button onclick="createBackup()" class="io-btn">
+                    <i class="fas fa-save"></i>
+                    Создать резервную копию
+                  </button>
+                </div>
+              </div>
+
+              <div class="io-card">
+                <h3>
+                  <i class="fas fa-upload"></i>
+                  Импорт данных
+                </h3>
+                <p>Загрузите данные из JSON файла:</p>
+                <input
+                  type="file"
+                  id="import-file"
+                  class="form-control"
+                  accept=".json"
+                  onchange="importData(event)"
+                />
+                <div
+                  id="import-preview"
+                  class="json-preview"
+                  style="display: none"
+                ></div>
+                <div
+                  id="import-actions"
+                  style="display: none; margin-top: 10px"
+                >
+                  <button onclick="confirmImport()" class="submit-btn">
+                    <i class="fas fa-check"></i>
+                    Подтвердить импорт
+                  </button>
+                  <button onclick="cancelImport()" class="danger-btn">
+                    <i class="fas fa-times"></i>
+                    Отменить
+                  </button>
+                </div>
+              </div>
+
+              <div class="io-card">
+                <h3>
+                  <i class="fas fa-cog"></i>
+                  Управление системой
+                </h3>
+                <p>Функции администрирования и контроля версий:</p>
+                <div class="io-actions">
+                  <button onclick="showCommitHistory()" class="io-btn">
+                    <i class="fas fa-list"></i>
+                    История коммитов
+                  </button>
+                  <button onclick="forceCommitAll()" class="io-btn">
+                    <i class="fas fa-sync"></i>
+                    Принудительный коммит
+                  </button>
+                  <button
+                    onclick="window.location.href='backup-manager.html'"
+                    class="io-btn"
+                  >
+                    <i class="fas fa-database"></i>
+                    Управление резервными копиями
+                  </button>
+                </div>
+                <div style="margin-top: 15px">
+                  <h4>Импорт всех данных:</h4>
+                  <input
+                    type="file"
+                    id="import-all-file"
+                    class="form-control"
+                    accept=".json"
+                    onchange="importAllData(event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/backup-manager.js"></script>
+    <script src="js/server.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

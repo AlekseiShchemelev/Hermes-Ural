@@ -1,0 +1,13 @@
+{
+  "weldersMP": [
+    {
+      "fio": "Вахмин Андрей Александрович",
+      "stamp": "ЕВРН",
+      "thickness": "от 5 и выше",
+      "validUntil": "03-04-2026",
+      "material": "черн + нерж",
+      "comment": "Нет техн на нерж. => выбирай РД или АРГОН",
+      "certificateImage": "./images/EBPH-MIG-24.pdf"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Реестр сварщиков - Hermes-Ural</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+    <link rel="stylesheet" href="../css/registry-common.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  </head>
+  <body class="registry-container">
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-user-hard-hat"></i> Сварщики</h2>
+        </div>
+        <div class="sidebar-nav">
+          <button
+            class="nav-btn active"
+            onclick="window.registryCommon.showSection('select')"
+          >
+            <i class="fas fa-search"></i> Поиск
+          </button>
+          <button
+            class="nav-btn"
+            onclick="window.registryCommon.showSection('results')"
+          >
+            <i class="fas fa-table"></i> Результаты
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-main">
+        <div class="admin-header">
+          <div class="header-left">
+            <h1><i class="fas fa-user-hard-hat"></i> Реестр сварщиков</h1>
+          </div>
+          <div class="header-actions">
+            <button
+              onclick="window.location.href='../index.html'"
+              class="action-btn back-btn"
+            >
+              <i class="fas fa-arrow-left"></i> На главную
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-content">
+          <!-- Экран выбора -->
+          <div id="select-section" class="selection-card">
+            <h2><i class="fas fa-filter"></i> Выберите тип сварки</h2>
+
+            <div class="form-group">
+              <label>Тип сварки:</label>
+              <select id="weldingType" class="form-control">
+                <option value="">-- Выберите --</option>
+                <option value="Автоматическая сварка">
+                  АФ (Автоматическая сварка)
+                </option>
+                <option value="Ручная дуговая">РД (Ручная дуговая)</option>
+                <option value="Полуавтоматическая сварка">
+                  МП (Полуавтоматическая сварка)
+                </option>
+                <option value="Аргонодуговая сварка">
+                  РАД (Аргонодуговая сварка)
+                </option>
+              </select>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 25px">
+              <button id="confirmBtn" class="btn-primary">
+                <i class="fas fa-search"></i> Показать данные
+              </button>
+              <button id="resetBtn" class="btn-secondary">
+                <i class="fas fa-redo"></i> Сброс
+              </button>
+            </div>
+          </div>
+
+          <!-- Экран результатов -->
+          <div id="results-section" class="hidden">
+            <div
+              style="
+                display: flex;
+                gap: 15px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+              "
+            >
+              <button id="backToSelectBtn" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i> Назад к выбору
+              </button>
+              <button
+                id="generatePdfBtn"
+                class="btn-primary"
+                style="background: linear-gradient(135deg, #27ae60, #219653)"
+              >
+                <i class="fas fa-file-pdf"></i> Скачать PDF
+              </button>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Данные сварщиков</h2>
+                <div id="resultsCount" style="color: #4a5568; font-weight: 600">
+                  Найдено: 0 записей
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="registry-table">
+                  <thead>
+                    <tr>
+                      <th>ФИО</th>
+                      <th>Клеймо</th>
+                      <th>Толщина (мм)</th>
+                      <th>Действует до</th>
+                      <th>Тип материала</th>
+                      <th>Документ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div
+              id="noResults"
+              class="hidden"
+              style="text-align: center; padding: 60px 20px"
+            >
+              <i
+                class="fas fa-search"
+                style="font-size: 48px; color: #bdc3c7; margin-bottom: 20px"
+              ></i>
+              <h3 style="color: #7f8c8d; margin-bottom: 10px">
+                Ничего не найдено
+              </h3>
+              <p style="color: #95a5a6; margin-bottom: 20px">
+                Попробуйте изменить параметры поиска
+              </p>
+              <button id="backToSearchBtn" class="btn-secondary">
+                <i class="fas fa-redo"></i> Вернуться к поиску
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/registry-common.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

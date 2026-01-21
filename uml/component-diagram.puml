@@ -1,0 +1,175 @@
+@startuml Registry Application - Component Diagram
+
+title Registry Application - Component Diagram
+
+' === КОМПОНЕНТЫ ИНТЕРФЕЙСА ===
+
+package "Frontend (Клиентская часть)" {
+
+  component "index.html" as HTML {
+    [Главная страница]
+  }
+
+  component "admin.html" as AdminHTML {
+    [Страница администрирования]
+  }
+
+  component "css/styles.css" as Styles {
+    [Стили приложения]
+  }
+
+  component "css/admin.css" as AdminStyles {
+    [Стили админки]
+  }
+}
+
+' === МОДУЛИ ПРИЛОЖЕНИЯ ===
+
+package "JavaScript Modules" {
+
+  component "app.js" as App {
+    [Application Class]
+    --
+    + init()
+    + getModule()
+    + reloadModule()
+  }
+
+  component "modules/common.js" as Common {
+    [CommonUtils]
+    --
+    + showNotification()
+    + getCurrentDate()
+    + downloadJSONFile()
+    [SectionManager]
+    --
+    + showSection()
+  }
+
+  component "modules/wire.js" as Wire {
+    [WireManager]
+    --
+    + init()
+    + performSearch()
+    + resetFilters()
+    + loadWireData()
+  }
+
+  component "modules/welders.js" as Welders {
+    [WeldersManager]
+    --
+    + init()
+    + performSearch()
+    + editWelder()
+    + deleteWelder()
+  }
+
+  component "modules/specialists.js" as Specialists {
+    [SpecialistsManager]
+    --
+    + init()
+    + performSearch()
+    + editSpecialist()
+    + deleteSpecialist()
+  }
+
+  component "modules/techprocess.js" as Tech {
+    [TechprocessManager]
+    --
+    + init()
+    + performSearch()
+    + editTechprocess()
+    + deleteTechprocess()
+  }
+
+  component "modules/admin.js" as Admin {
+    [AdminManager]
+    --
+    + loadData()
+    + updateStats()
+    + createBackup()
+    + saveData()
+  }
+
+  component "modules/file-server.js" as FileSrv {
+    [FileServer]
+    --
+    + saveJSONFile()
+    + loadJSONFile()
+    + listFiles()
+    + createFullBackup()
+  }
+
+  component "modules/backup-manager.js" as Backup {
+    [BackupManager]
+    --
+    + createBackup()
+    + restoreFromBackup()
+    + loadBackupFromFile()
+    + createCommit()
+  }
+}
+
+' === ДАННЫЕ ===
+
+package "Data Storage" {
+
+  database "localStorage" as LocalStorage {
+    [file_wire_data]
+    [file_welders_data]
+    [file_specialists_data]
+    [file_techprocess_data]
+    [backup_registry]
+    [commit_registry]
+  }
+
+  folder "data_json" as DataFolder {
+    [data-wire.json]
+    [data-welders.json]
+    [data-specialists.json]
+    [data-techprocess.json]
+  }
+}
+
+' === СВЯЗИ ===
+
+' HTML -> App
+HTML --> App : Интеграция\nDOMContentLoaded
+AdminHTML --> App : Интеграция
+
+' App зависимости
+App --> Common : импорт
+App --> Wire : импорт
+App --> Welders : импорт
+App --> Specialists : импорт
+App --> Tech : импорт
+App --> Admin : импорт
+App --> FileSrv : импорт
+App --> Backup : импорт
+
+' Модули данных -> Common
+Wire --> Common : использует
+Welders --> Common : использует
+Specialists --> Common : использует
+Tech --> Common : использует
+Admin --> Common : использует
+
+' Backup -> FileSrv
+Backup --> FileSrv : использует
+
+' FileSrv -> LocalStorage
+FileSrv --> LocalStorage : read/write
+
+' LocalStorage -> DataFolder (опционально)
+LocalStorage <.. DataFolder : Синхронизация\n(опционально)
+
+' Стили
+Styles --> HTML : Применяется
+Styles --> Wire : Стилизация UI
+Styles --> Welders : Стилизация UI
+Styles --> Specialists : Стилизация UI
+Styles --> Tech : Стилизация UI
+
+AdminStyles --> AdminHTML : Применяется
+
+@enduml

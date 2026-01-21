@@ -1,0 +1,12 @@
+{
+  "weldersRD": [
+    {
+      "fio": "Свяжин Александр Сергеевич",
+      "stamp": "1ХМ1",
+      "thickness": "от 5 до 40 вкл.",
+      "validUntil": "07-09-2026",
+      "material": "черн + нерж",
+      "certificateImage": "./images/1XM1-25.pdf"
+    }
+  ]
+}

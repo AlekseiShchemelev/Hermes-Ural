@@ -1,0 +1,13 @@
+{
+  "weldersRAD": [
+    {
+      "fio": "Вахмин Андрей Александрович",
+      "stamp": "EBPH",
+      "thickness": "от 3 до 12 вкл.",
+      "validUntil": "26-09-2027",
+      "material": "черн + нерж",
+      "comment": "Нет техн на черн. => выбирай П/А или РДС",
+      "certificateImage": "./images/ЕВРН-Ar-25.pdf"
+    }
+  ]
+}

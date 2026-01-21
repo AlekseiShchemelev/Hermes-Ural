@@ -1,0 +1,28 @@
+{
+  "weldersAF": [
+    {
+      "fio": "Журавлев Вадим Валерьевич",
+      "stamp": "9ZFK",
+      "thickness": "от 3 до 40 вкл.",
+      "validUntil": "03-10-2026",
+      "material": "черн + нерж",
+      "certificateImage": "./images/9ZFK-23.pdf"
+    },
+    {
+      "fio": "Смирнов Дмитрий Сергеевич",
+      "stamp": "EA37",
+      "thickness": "от 5 до 40 вкл.",
+      "validUntil": "03-04-2026",
+      "material": "черн + нерж",
+      "certificateImage": "./images/EA37-24.pdf"
+    },
+    {
+      "fio": "Устюжанинов Максим Юрьевич",
+      "stamp": "BR72",
+      "thickness": "от 5 до 40 вкл.",
+      "validUntil": "16-05-2026",
+      "material": "черн + нерж",
+      "certificateImage": "./images/BR72-25.pdf"
+    }
+  ]
+}
