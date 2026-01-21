@@ -8,7 +8,7 @@
       "diameter": "3,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Северсталь",
-      "certificate": "carbon/10нма-3,0.pdf",
+      "certificate": "./carbon/10нма-3,0.pdf",
       "issueDate": "07.10.2025",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -20,7 +20,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Северсталь",
-      "certificate": "carbon/10нма-4,0.pdf",
+      "certificate": "./carbon/10нма-4,0.pdf",
       "issueDate": "06.03.2028",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -32,7 +32,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "ЧЗСМ",
-      "certificate": "carbon/08га-4,0.pdf",
+      "certificate": "./carbon/08га-4,0.pdf",
       "issueDate": "09.03.2026",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -44,7 +44,7 @@
       "diameter": "4,0",
       "standard": "ТУ 1222-002-2945213-2016",
       "manufacturer": "Superon Schweisstechnik India Ltd",
-      "certificate": "inox/ag-er-318- 4,0.pdf",
+      "certificate": "./inox/ag-er-318- 4,0.pdf",
       "issueDate": "26.01.2027",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -56,7 +56,7 @@
       "diameter": "3,2",
       "standard": "ТУ 25.93.15-339-55224353-2024",
       "manufacturer": "ESAB",
-      "certificate": "inox/autrod-316l-3,2.pdf",
+      "certificate": "./inox/autrod-316l-3,2.pdf",
       "issueDate": "26.01.2027",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -68,7 +68,7 @@
       "diameter": "4,0",
       "standard": "ТУ 1222-002-02945213-2016",
       "manufacturer": "AlfaGlobal",
-      "certificate": "inox/ag-er-308l-4,0.pdf",
+      "certificate": "./inox/ag-er-308l-4,0.pdf",
       "issueDate": "20.12.2026",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -80,7 +80,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Ферротрейд",
-      "certificate": "inox/04Х19Н9-4,0.pdf",
+      "certificate": "./inox/04Х19Н9-4,0.pdf",
       "issueDate": "12.09.2027",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -92,7 +92,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Ферротрейд",
-      "certificate": "inox/06Х19Н9Т-4,0.pdf",
+      "certificate": "./inox/06Х19Н9Т-4,0.pdf",
       "issueDate": "17.07.2028",
       "description": "Автоматическая сварка под флюсом"
     },
@@ -104,7 +104,7 @@
       "diameter": "4,0",
       "standard": "ГОСТ 2246-70",
       "manufacturer": "Спарк",
-      "certificate": "inox/07х19н10б-4,0.pdf",
+      "certificate": "./inox/07х19н10б-4,0.pdf",
       "issueDate": "21.07.2026",
       "description": "Автоматическая сварка под флюсом"
     }
