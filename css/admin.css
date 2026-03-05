@@ -1,4 +1,4 @@
-/* ===== АДМИН ПАНЕЛЬ - БАЗОВЫЕ СТИЛИ ===== */
+/* ===== АДМИН ПАНЕЛЬ - СПЕЦИФИЧНЫЕ СТИЛИ ===== */
 :root {
   --sidebar-width: 260px;
   --header-height: 70px;
@@ -22,6 +22,7 @@
   z-index: 100;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
   transition: width var(--transition-speed);
+  overflow-y: auto;
 }
 
 .sidebar-header {
@@ -107,7 +108,6 @@
   min-height: 100vh;
 }
 
-/* Шапка */
 .admin-header {
   height: var(--header-height);
   background: white;
@@ -178,7 +178,6 @@
   box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
 }
 
-/* ===== КОНТЕНТ СЕКЦИЙ ===== */
 .admin-content {
   padding: 30px;
   animation: fadeInUp 0.4s ease;
@@ -197,14 +196,13 @@
 
 .hidden-section {
   display: none;
-  animation: fadeInUp 0.4s ease;
 }
 
 .hidden-section.active {
   display: block;
 }
 
-/* ===== СТАТИСТИЧЕСКИЕ КАРТОЧКИ ===== */
+/* ===== СТАТИСТИЧЕСКИЕ КАРТОЧКИ В АДМИНКЕ ===== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -279,133 +277,7 @@
   color: #e74c3c;
 }
 
-/* ===== ФОРМЫ ===== */
-.form-card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 30px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
-}
-
-.form-card h2 {
-  color: #2c3e50;
-  font-size: 1.3rem;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #f1f5f9;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 25px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #4a5568;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #2c3e50;
-  transition: all 0.3s ease;
-  background: white;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
-
-.form-control::placeholder {
-  color: #a0aec0;
-}
-
-.submit-btn {
-  background: linear-gradient(135deg, #27ae60, #219653);
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-}
-
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
-}
-
-/* ===== ТАБЛИЦЫ ===== */
-.table-container {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
-}
-
-.table-header {
-  padding: 25px 30px;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.table-header h2 {
-  font-size: 1.3rem;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.table-filter {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.filter-select {
-  padding: 10px 15px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: #4a5568;
-  background: white;
-  min-width: 200px;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
+/* ===== ТАБЛИЦЫ В АДМИНКЕ (специфичные) ===== */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -431,15 +303,11 @@
   font-size: 0.95rem;
 }
 
-.admin-table tr {
-  transition: background 0.2s ease;
-}
-
 .admin-table tbody tr:hover {
   background: #f8fafc;
 }
 
-/* Кнопки действий */
+/* ===== КНОПКИ ДЕЙСТВИЙ В АДМИНКЕ ===== */
 .action-buttons {
   display: flex;
   gap: 10px;
@@ -478,88 +346,6 @@
   background: #e74c3c;
   color: white;
   transform: translateY(-2px);
-}
-
-/* ===== СЕКЦИЯ ИМПОРТА/ЭКСПОРТА ===== */
-.import-export-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
-}
-
-.io-card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.io-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-.io-card h3 {
-  color: #2c3e50;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.io-card p {
-  color: #718096;
-  margin-bottom: 25px;
-  line-height: 1.6;
-}
-
-.io-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.io-btn {
-  padding: 14px 20px;
-  border: 2px solid #e2e8f0;
-  background: white;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #4a5568;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.3s ease;
-  text-align: left;
-}
-
-.io-btn:hover {
-  border-color: #3498db;
-  color: #3498db;
-  transform: translateX(5px);
-}
-
-.io-btn i {
-  font-size: 1.2rem;
-  width: 24px;
-}
-
-/* Превью JSON */
-.json-preview {
-  background: #1a202c;
-  color: #81e6d9;
-  padding: 20px;
-  border-radius: 8px;
-  font-family: "Consolas", "Monaco", monospace;
-  font-size: 0.9rem;
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 20px;
-  border: 1px solid #2d3748;
 }
 
 /* ===== АДАПТИВНОСТЬ ===== */
@@ -655,70 +441,4 @@
   .form-grid {
     grid-template-columns: 1fr;
   }
-
-  .io-card {
-    padding: 20px;
-  }
-}
-
-/* Анимации */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-/* Утилиты */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 8px;
-}
-
-.badge-success {
-  background: #d4edda;
-  color: #155724;
-}
-
-.badge-warning {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.badge-danger {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.status-indicator {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.status-active {
-  background: #27ae60;
-}
-
-.status-expired {
-  background: #e74c3c;
-}
-
-.status-pending {
-  background: #f39c12;
 }

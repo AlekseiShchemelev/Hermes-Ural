@@ -31,6 +31,8 @@ confirmBtn.addEventListener("click", () => {
       resTP: "./resTP/index.html",
       resWeld: "./resWeld/index.html",
       resSpec: "./resSpec/index.html",
+      resTechInstructions: "./resTechInstructions/index.html",
+      resWeldingEquipment: "./resWeldingEquipment/index.html",
     };
 
     window.location.href = routes[selected];

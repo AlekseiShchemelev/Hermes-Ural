@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -11,8 +11,29 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+      .registry-table th:first-child {
+        min-width: 200px;
+      } /* Марка */
+      .registry-table th:nth-child(2) {
+        min-width: 120px;
+      } /* Тип */
+      .registry-table th:nth-child(3) {
+        min-width: 180px;
+      } /* Способ */
+      .registry-table th:nth-child(4) {
+        min-width: 80px;
+      } /* Диаметр */
+      .registry-table th:nth-child(5) {
+        min-width: 150px;
+      } /* ГОСТ */
+      .registry-table th:nth-child(6) {
+        min-width: 150px;
+      } /* Производитель */
+      .registry-table th:nth-child(7) {
+        min-width: 100px;
+      } /* Дата */
+    </style>
   </head>
   <body class="registry-container">
     <div class="admin-container">
@@ -43,7 +64,7 @@
           </div>
           <div class="header-actions">
             <button
-              onclick="window.location.href='../index.html'"
+              onclick="window.location.href = '../index.html'"
               class="action-btn back-btn"
             >
               <i class="fas fa-arrow-left"></i> На главную
@@ -55,7 +76,6 @@
           <!-- Экран выбора -->
           <div id="select-section" class="selection-card">
             <h2><i class="fas fa-filter"></i> Параметры поиска</h2>
-
             <div
               class="form-grid"
               style="
@@ -75,7 +95,6 @@
                   <option value="stainless">Нержавеющая аустенитная</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label>2. Способ сварки:</label>
                 <select id="weldingMethod" class="form-control">
@@ -86,7 +105,6 @@
                   <option value="RD">РД - ручная дуговая</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label>3. Диаметр (мм):</label>
                 <select id="wireDiameter" class="form-control">
@@ -94,7 +112,6 @@
                 </select>
               </div>
             </div>
-
             <div
               class="btn-group"
               style="display: flex; gap: 15px; margin-top: 20px"
@@ -118,7 +135,10 @@
                 flex-wrap: wrap;
               "
             >
-              <button id="backToSelectBtn" class="btn-secondary">
+              <button
+                class="btn-secondary"
+                onclick="window.registryCommon.showSection('select')"
+              >
                 <i class="fas fa-arrow-left"></i> Назад к поиску
               </button>
               <button
@@ -137,7 +157,6 @@
                   Найдено: 0 записей
                 </div>
               </div>
-
               <div class="table-responsive">
                 <table class="registry-table">
                   <thead>
@@ -180,6 +199,11 @@
       </div>
     </div>
 
+    <!-- Подключаем html2pdf с CDN (гарантированно работает) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Ваши скрипты -->
+    <script src="../config/spreadsheet-config.js"></script>
     <script src="../js/registry-common.js"></script>
     <script src="app.js"></script>
   </body>

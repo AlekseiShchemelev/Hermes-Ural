@@ -1,5 +1,6 @@
-// Загрузка данных из JSON файлов
 let weldingData = {};
+let currentFilteredData = [];
+
 const METHOD_MAPPING = {
   "Автоматическая сварка": "af",
   "Ручная дуговая": "rd",
@@ -7,7 +8,6 @@ const METHOD_MAPPING = {
   "Аргонодуговая сварка": "rad",
 };
 
-// Методы сварки для отображения
 const methodDisplay = {
   "Автоматическая сварка": "АФ (Автоматическая сварка)",
   "Ручная дуговая": "РД (Ручная дуговая)",
@@ -15,8 +15,14 @@ const methodDisplay = {
   "Аргонодуговая сварка": "РАД (Аргонодуговая сварка)",
 };
 
-// Общие переменные
-let currentFilteredData = [];
+function getViewLink(downloadLink) {
+  if (!downloadLink) return "";
+  const match = downloadLink.match(/[-\w]{25,}/);
+  if (match) {
+    return `https://drive.google.com/file/d/${match[0]}/preview`;
+  }
+  return downloadLink.replace("export=download", "export=media");
+}
 
 // Инициализация
 document.addEventListener("DOMContentLoaded", async function () {
@@ -26,95 +32,100 @@ document.addEventListener("DOMContentLoaded", async function () {
   initNavigation();
 });
 
-// Инициализация элементов
 function initElements() {
   window.screenSelect = document.getElementById("select-section");
   window.screenResults = document.getElementById("results-section");
   window.weldingTypeSelect = document.getElementById("weldingType");
   window.confirmBtn = document.getElementById("confirmBtn");
-  window.backToSelectBtn = document.getElementById("backToSelectBtn");
   window.backToSearchBtn2 = document.getElementById("backToSearchBtn2");
   window.noResults = document.getElementById("noResults");
   window.tableBody = document.getElementById("tableBody");
   window.generatePdfBtn = document.getElementById("generatePdfBtn");
+  window.resultsCount = document.getElementById("resultsCount");
+  window.resetBtn = document.getElementById("resetBtn");
+  window.backToSearchBtn = document.getElementById("backToSearchBtn");
 }
 
-// Загрузка данных
 async function loadWeldingData() {
   try {
-    console.log("Загрузка данных сварщиков...");
-
-    for (const [category, folder] of Object.entries(METHOD_MAPPING)) {
-      try {
-        const response = await fetch(
-          `../data_json/${folder}/data-welders-${folder}.json`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          const key = `welders${folder.toUpperCase()}`;
-          if (data[key]) {
-            // Добавляем категорию к каждому элементу для фильтрации
-            const dataWithCategory = data[key].map((item) => ({
-              ...item,
-              category: category,
-            }));
-
-            if (!weldingData[category]) {
-              weldingData[category] = [];
-            }
-            weldingData[category].push(...dataWithCategory);
-
-            console.log(
-              `Загружено ${data[key].length} сварщиков для ${category}`
-            );
-          }
-        }
-      } catch (error) {
-        console.warn(`Ошибка загрузки для ${category}:`, error);
-      }
-    }
-
-    // Преобразуем объект в плоский массив для удобства фильтрации
-    currentFilteredData = Object.values(weldingData).flat();
-
-    console.log("Данные загружены:", Object.keys(weldingData));
-    console.log(`Всего загружено сварщиков: ${currentFilteredData.length}`);
-
+    console.log("Загрузка данных сварщиков из Google Sheets...");
     window.registryCommon.showNotification(
-      "Данные сварщиков загружены",
-      "success"
+      "Загрузка данных сварщиков...",
+      "info",
+    );
+
+    if (!window.spreadsheetConfig)
+      throw new Error("spreadsheetConfig не загружен");
+
+    const url = window.spreadsheetConfig.SPREADSHEET_URLS.welders;
+    const rows = await window.spreadsheetConfig.loadCSVAsJSON(url);
+
+    weldingData = {};
+    rows.forEach((row) => {
+      const methodName = row["Method"] || "";
+      let category = mapMethodToCategory(methodName);
+      if (!category) category = "Другие";
+
+      if (!weldingData[category]) weldingData[category] = [];
+
+      weldingData[category].push({
+        fio: row["FIO"] || "",
+        stamp: row["Stamp"] || "",
+        thickness: row["Thickness"] || "",
+        validUntil: row["ValidUntil"] ? row["ValidUntil"].split(" ")[0] : "",
+        material: row["Material"] || "",
+        certificateImage: row["CertificateImage"] || "",
+        comment: row["Comment"] || "",
+      });
+    });
+
+    console.log("Данные сварщиков загружены", Object.keys(weldingData));
+    const total = Object.values(weldingData).reduce((s, a) => s + a.length, 0);
+    window.registryCommon.showNotification(
+      `Загружено ${total} сварщиков`,
+      "success",
     );
   } catch (error) {
-    console.error("Ошибка при загрузке:", error);
+    console.error("Ошибка загрузки сварщиков:", error);
+    weldingData = {};
     window.registryCommon.showNotification("Ошибка загрузки данных", "error");
   }
 }
 
-// Инициализация обработчиков событий
+function mapMethodToCategory(method) {
+  if (!method) return null;
+  const m = method.trim().toUpperCase();
+  if (m === "AF" || m.includes("AUTOMATIC")) return "Автоматическая сварка";
+  if (m === "MP" || m.includes("MIG")) return "Полуавтоматическая сварка";
+  if (m === "RD" || m.includes("MMA")) return "Ручная дуговая";
+  if (m === "RAD" || m.includes("TIG")) return "Аргонодуговая сварка";
+  return null;
+}
+
 function initEventListeners() {
   confirmBtn.addEventListener("click", performSearch);
 
-  // Кнопка "Назад к выбору"
-  if (backToSelectBtn) {
-    backToSelectBtn.addEventListener("click", () => {
+  if (backToSearchBtn) {
+    backToSearchBtn.addEventListener("click", () => {
       window.registryCommon.showSection("select");
     });
   }
 
-  // Кнопка "Вернуться к поиску" в пустых результатах
   if (backToSearchBtn2) {
     backToSearchBtn2.addEventListener("click", () => {
       window.registryCommon.showSection("select");
     });
   }
 
-  // Кнопка генерации PDF
   if (generatePdfBtn) {
     generatePdfBtn.addEventListener("click", generatePDF);
   }
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", resetFilters);
+  }
 }
 
-// Инициализация навигации в сайдбаре
 function initNavigation() {
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -129,39 +140,40 @@ function initNavigation() {
   });
 }
 
-// Функция поиска
 function performSearch() {
-  const selected = weldingTypeSelect.value;
+  const selected = weldingTypeSelect.value.trim();
 
   if (!selected) {
     window.registryCommon.showNotification(
       "Пожалуйста, выберите тип сварки",
-      "warning"
+      "warning",
     );
     return;
   }
 
-  if (!weldingData[selected]) {
+  const matchedKey = Object.keys(weldingData).find(
+    (key) => key.trim() === selected,
+  );
+
+  if (!matchedKey) {
+    console.log("Доступные ключи:", Object.keys(weldingData));
+    console.log("Выбрано:", selected);
     window.registryCommon.showNotification(
       "Данные не загружены для выбранного типа",
-      "error"
+      "error",
     );
     return;
   }
 
-  // Фильтруем данные по выбранной категории
-  currentFilteredData = weldingData[selected] || [];
-
-  // Отображаем результаты
+  currentFilteredData = weldingData[matchedKey] || [];
   displayResults(currentFilteredData);
 
   window.registryCommon.showNotification(
     `Найдено ${currentFilteredData.length} сварщиков`,
-    "success"
+    "success",
   );
 }
 
-// Функция отображения результатов
 function displayResults(data) {
   const tbody = document.getElementById("tableBody");
   tbody.innerHTML = "";
@@ -178,18 +190,15 @@ function displayResults(data) {
   } else {
     data.forEach((item) => {
       const isValid = !window.registryCommon.isExpired(item.validUntil);
-
-      // Определяем тип файла сертификата
-      const certificateUrl = item.certificateImage || item.certificate;
+      const certificateUrl = item.certificateImage;
       const fileType = certificateUrl
         ? certificateUrl.toLowerCase().endsWith(".pdf")
           ? "PDF"
           : certificateUrl.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)
-          ? "Изображение"
-          : "Файл"
+            ? "Изображение"
+            : "Файл"
         : null;
 
-      // Основная строка
       const row = document.createElement("tr");
       row.className = "clickable-row";
       row.innerHTML = `
@@ -198,9 +207,7 @@ function displayResults(data) {
         <td>${item.thickness} мм</td>
         <td>
           <span class="${isValid ? "status-valid" : "status-expired"}">
-            <i class="fas fa-${
-              isValid ? "check-circle" : "exclamation-circle"
-            }"></i>
+            <i class="fas fa-${isValid ? "check-circle" : "exclamation-circle"}"></i>
             ${window.registryCommon.formatDate(item.validUntil)}
           </span>
         </td>
@@ -209,22 +216,20 @@ function displayResults(data) {
           ${
             certificateUrl
               ? `<span class="badge" style="background: #e3f2fd; color: #1976d2;">
-                <i class="fas fa-${
-                  fileType === "PDF" ? "file-pdf" : "file-alt"
-                }"></i>
-                ${fileType}
-              </span>`
+                  <i class="fas fa-${fileType === "PDF" ? "file-pdf" : "file-alt"}"></i>
+                  ${fileType}
+                </span>`
               : "—"
           }
         </td>
       `;
       tbody.appendChild(row);
 
-      // Строка с деталями сертификата
+      // Детальная строка
       const detailRow = document.createElement("tr");
       detailRow.className = "image-row hidden";
 
-      detailRow.innerHTML = `
+      let detailsHTML = `
         <td colspan="6">
           <div style="padding: 25px; background: #f8fafc; border-radius: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -232,98 +237,89 @@ function displayResults(data) {
                 <i class="fas fa-user-hard-hat"></i>
                 Удостоверение сварщика: ${item.fio}
               </h4>
-              ${
-                certificateUrl
-                  ? `<span class="badge" style="background: #e3f2fd; color: #1976d2;">
-                    <i class="fas fa-${
-                      fileType === "PDF" ? "file-pdf" : "image"
-                    }"></i>
-                    ${fileType}
-                  </span>`
-                  : ""
-              }
+              ${certificateUrl ? `<span class="badge" style="background: #e3f2fd; color: #1976d2;">${fileType}</span>` : ""}
             </div>
-            
-            ${
-              certificateUrl
-                ? `<div style="text-align: center; margin-bottom: 20px;">
-                  <a href="${certificateUrl}" 
-                     target="_blank" 
-                     class="btn-primary"
-                     style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                    <i class="fas fa-${
-                      fileType === "PDF" ? "file-pdf" : "image"
-                    }"></i>
-                    ${
-                      fileType === "PDF"
-                        ? "Открыть PDF-документ"
-                        : "Открыть изображение"
-                    }
-                  </a>
-                  <p style="color: #718096; font-size: 0.9rem;">
-                    <i class="fas fa-external-link-alt"></i>
-                    Документ откроется в новой вкладке
-                  </p>
-                </div>`
-                : `<div style="text-align: center; padding: 20px; color: #95a5a6;">
-                  <i class="fas fa-file-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
-                  <p>Документ удостоверения недоступен в электронном виде</p>
-                </div>`
-            }
-            
-            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-              <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #3498db;">
-                <strong><i class="fas fa-hashtag"></i> Клеймо:</strong>
-                <p style="margin: 5px 0 0;">${item.stamp || "-"}</p>
-              </div>
-              
-              <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #27ae60;">
-                <strong><i class="fas fa-ruler-vertical"></i> Толщина:</strong>
-                <p style="margin: 5px 0 0;">${item.thickness || "-"} мм</p>
-              </div>
-              
-              <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #f39c12;">
-                <strong><i class="fas fa-calendar-check"></i> Действует до:</strong>
-                <p style="margin: 5px 0 0;" class="${
-                  isValid ? "status-valid" : "status-expired"
-                }">
-                  ${window.registryCommon.formatDate(item.validUntil) || "-"}
-                </p>
-              </div>
-              
-              <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #9b59b6;">
-                <strong><i class="fas fa-layer-group"></i> Материал:</strong>
-                <p style="margin: 5px 0 0;">${item.material || "-"}</p>
-              </div>
-            </div>
-            
-            ${
-              item.comment
-                ? `<div style="margin-top: 20px; padding: 15px; 
-                        background: white; border-radius: 6px;
-                        border-left: 3px solid #e74c3c; text-align: left;">
-                  <strong><i class="fas fa-comment"></i> Примечание:</strong>
-                  <p style="margin-top: 5px; margin-bottom: 0;">${item.comment}</p>
-                </div>`
-                : ""
-            }
-          </div>
-        </td>
       `;
+
+      if (certificateUrl) {
+        const viewLink = getViewLink(certificateUrl);
+        detailsHTML += `
+          <div style="text-align: center; margin-bottom: 20px;">
+            <a href="${viewLink}" target="_blank" class="btn-view" style="margin-right:10px; padding:5px 10px;">
+              <i class="fas fa-eye"></i> Просмотреть
+            </a>
+            <a href="${certificateUrl}" download class="btn-secondary" style="padding:5px 10px;">
+              <i class="fas fa-download"></i> Скачать
+            </a>
+          </div>
+        `;
+      } else {
+        detailsHTML += `
+          <div style="text-align: center; padding: 20px; color: #95a5a6;">
+            <i class="fas fa-file-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
+            <p>Документ удостоверения недоступен в электронном виде</p>
+          </div>
+        `;
+      }
+
+      detailsHTML += `
+        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+          <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #3498db;">
+            <strong><i class="fas fa-hashtag"></i> Клеймо:</strong>
+            <p style="margin: 5px 0 0;">${item.stamp || "-"}</p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #27ae60;">
+            <strong><i class="fas fa-ruler-vertical"></i> Толщина:</strong>
+            <p style="margin: 5px 0 0;">${item.thickness || "-"} мм</p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #f39c12;">
+            <strong><i class="fas fa-calendar-check"></i> Действует до:</strong>
+            <p style="margin: 5px 0 0;" class="${isValid ? "status-valid" : "status-expired"}">
+              ${window.registryCommon.formatDate(item.validUntil) || "-"}
+            </p>
+          </div>
+          <div style="background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #9b59b6;">
+            <strong><i class="fas fa-layer-group"></i> Материал:</strong>
+            <p style="margin: 5px 0 0;">${item.material || "-"}</p>
+          </div>
+        </div>
+      `;
+
+      if (item.comment) {
+        detailsHTML += `
+          <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 6px; border-left: 3px solid #e74c3c; text-align: left;">
+            <strong><i class="fas fa-comment"></i> Примечание:</strong>
+            <p style="margin-top: 5px; margin-bottom: 0;">${item.comment}</p>
+          </div>
+        `;
+      }
+
+      detailsHTML += `</div></td>`;
+      detailRow.innerHTML = detailsHTML;
       tbody.appendChild(detailRow);
     });
+  }
+
+  if (resultsCount) {
+    resultsCount.textContent = `Найдено: ${data.length} записей`;
   }
 
   window.registryCommon.showSection("results");
   window.registryCommon.initClickableRows();
 }
 
-// Функция генерации PDF для сварщиков
+function resetFilters() {
+  weldingTypeSelect.value = "";
+  currentFilteredData = [];
+  displayResults([]);
+  window.registryCommon.showNotification("Фильтры сброшены", "info");
+}
+
 function generatePDF() {
   if (!currentFilteredData || currentFilteredData.length === 0) {
     window.registryCommon.showNotification(
       "Нет данных для генерации PDF. Сначала выполните поиск.",
-      "warning"
+      "warning",
     );
     return;
   }
@@ -337,14 +333,10 @@ function generatePDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      // Используем шрифт с поддержкой кириллицы
       doc.setFont("helvetica", "normal");
-
-      // Заголовок
       doc.setFontSize(16);
       doc.text("РЕЕСТР СВАРЩИКОВ", 105, 15, null, null, "center");
 
-      // Подзаголовок
       doc.setFontSize(11);
       const selectedType =
         weldingTypeSelect.options[weldingTypeSelect.selectedIndex].text;
@@ -352,11 +344,10 @@ function generatePDF() {
       doc.text(
         `Дата генерации: ${new Date().toLocaleDateString("ru-RU")}`,
         20,
-        32
+        32,
       );
       doc.text(`Всего записей: ${currentFilteredData.length}`, 150, 32);
 
-      // Таблица
       doc.autoTable({
         head: [
           [
@@ -407,20 +398,14 @@ function generatePDF() {
         margin: { left: 15, right: 15 },
       });
 
-      // Сохраняем
-      const fileName = `сварщики_${selectedType.replace(
-        /[^а-яА-Я0-9]/g,
-        "_"
-      )}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      const fileName = `сварщики_${selectedType.replace(/[^а-яА-Я0-9]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`;
       doc.save(fileName);
 
-      // Восстанавливаем кнопку
       generatePdfBtn.innerHTML = originalText;
       generatePdfBtn.disabled = false;
-
       window.registryCommon.showNotification(
         `PDF создан: ${fileName}`,
-        "success"
+        "success",
       );
     } catch (error) {
       console.error("Ошибка генерации PDF:", error);
@@ -431,7 +416,6 @@ function generatePDF() {
   }, 800);
 }
 
-// Экспорт функций в глобальную область видимости
 window.weldersRegistry = {
   performSearch,
   generatePDF,
