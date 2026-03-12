@@ -29,6 +29,9 @@
       notification.innerHTML = `
             <i class="fas fa-${icon}"></i>
             <span>${message}</span>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
         `;
 
       document.body.appendChild(notification);
