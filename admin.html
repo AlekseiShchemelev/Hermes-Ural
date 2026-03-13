@@ -17,6 +17,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- Кнопка мобильного меню -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- Оверлей для мобильного меню -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+
   <div class="admin-container">
     <!-- Боковая панель -->
     <aside class="admin-sidebar">
@@ -221,6 +229,72 @@
               <div class="stat-content">
                 <h3>Просроченные</h3>
                 <div class="stat-number" id="techprocess-expired-count">0</div>
+                <div class="stat-trend negative">
+                  <i class="fas fa-arrow-down"></i> Требует внимания
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ОБЗОР: Тех. инструкции -->
+        <div id="techInstructions-overview-section" class="hidden-section">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+              <div class="stat-content">
+                <h3>Всего инструкций</h3>
+                <div class="stat-number" id="techInstructions-total-count">0</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="stat-content">
+                <h3>Действующих</h3>
+                <div class="stat-number" id="techInstructions-active-count">0</div>
+                <div class="stat-trend">
+                  <i class="fas fa-arrow-up"></i> В порядке
+                </div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+              <div class="stat-content">
+                <h3>Отменённых</h3>
+                <div class="stat-number" id="techInstructions-cancelled-count">0</div>
+                <div class="stat-trend negative">
+                  <i class="fas fa-arrow-down"></i> Не действуют
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ОБЗОР: Оборудование -->
+        <div id="weldingEquipment-overview-section" class="hidden-section">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-robot"></i></div>
+              <div class="stat-content">
+                <h3>Всего оборудования</h3>
+                <div class="stat-number" id="weldingEquipment-total-count">0</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="stat-content">
+                <h3>Активных</h3>
+                <div class="stat-number" id="weldingEquipment-active-count">0</div>
+                <div class="stat-trend">
+                  <i class="fas fa-arrow-up"></i> В порядке
+                </div>
+              </div>
+            </div>
+            <div class="stat-card clickable" onclick="showExpiredModal('equipment')" style="cursor: pointer;">
+              <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div class="stat-content">
+                <h3>Просроченные</h3>
+                <div class="stat-number" id="weldingEquipment-expired-count">0</div>
                 <div class="stat-trend negative">
                   <i class="fas fa-arrow-down"></i> Требует внимания
                 </div>

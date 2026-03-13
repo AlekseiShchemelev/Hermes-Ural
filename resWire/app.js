@@ -381,60 +381,99 @@ function generatePDF() {
     return;
   }
 
+  // Проверка доступности библиотеки html2pdf
+  if (typeof html2pdf === "undefined") {
+    window.registryCommon.showNotification(
+      "Ошибка: библиотека PDF не загружена. Проверьте подключение к интернету.",
+      "error",
+    );
+    console.error("html2pdf не доступен");
+    return;
+  }
+
   const originalText = window.generatePdfBtn.innerHTML;
   window.generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   window.generatePdfBtn.disabled = true;
-
-  const element = document.createElement("div");
-  element.style.padding = "20px";
-  element.style.fontFamily = "Arial, sans-serif";
 
   const filters = getCurrentFiltersText();
   const date = new Date().toLocaleDateString("ru-RU");
   const count = currentFilteredData.length;
 
+  // Создаем HTML элемент для PDF
+  const element = document.createElement("div");
+  element.style.padding = "20px";
+  element.style.fontFamily = "Arial, sans-serif";
+  element.style.fontSize = "12px";
+  element.style.lineHeight = "1.4";
+
   let html = `
-    <h2 style="text-align:center; color:#2c3e50;">Реестр сварочной проволоки</h2>
-    <p><strong>Параметры поиска:</strong> ${filters}</p>
-    <p><strong>Дата:</strong> ${date}</p>
-    <p><strong>Найдено записей:</strong> ${count}</p>
-    <table border="1" cellpadding="5" style="border-collapse: collapse; width:100%; font-size:12px;">
-      <thead style="background:#27ae60; color:white;">
-        <tr>
-          <th>Марка</th>
-          <th>Тип</th>
-          <th>Способ сварки</th>
-          <th>Диаметр, мм</th>
-          <th>ГОСТ/ТУ</th>
-          <th>Производитель</th>
-          <th>НАКС до</th>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h2 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">РЕЕСТР СВАРОЧНОЙ ПРОВОЛОКИ</h2>
+      <div style="font-size: 11px; color: #555; margin-bottom: 5px;">
+        <strong>Параметры поиска:</strong> ${filters || "Все данные"}
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #555;">
+        <span><strong>Дата:</strong> ${date}</span>
+        <span><strong>Найдено записей:</strong> ${count}</span>
+      </div>
+    </div>
+    <table style="border-collapse: collapse; width: 100%; font-size: 9px;">
+      <thead>
+        <tr style="background: #27ae60; color: white;">
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: left; font-weight: bold;">Марка</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: left; font-weight: bold;">Тип</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: left; font-weight: bold;">Способ</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: center; font-weight: bold;">Диаметр</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: left; font-weight: bold;">ГОСТ/ТУ</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: left; font-weight: bold;">Производитель</th>
+          <th style="border: 1px solid #1e8449; padding: 6px; text-align: center; font-weight: bold;">НАКС до</th>
         </tr>
       </thead>
       <tbody>
   `;
 
-  currentFilteredData.forEach((item) => {
+  currentFilteredData.forEach((item, index) => {
     const displayMethod = methodDisplay[item.method] || item.method;
-    html += `<tr>
-      <td>${item.brand || ""}</td>
-      <td>${item.type || ""}</td>
-      <td>${displayMethod}</td>
-      <td>${item.diameter || ""}</td>
-      <td>${item.standard || ""}</td>
-      <td>${item.manufacturer || ""}</td>
-      <td>${item.issueDate ? window.registryCommon.formatDate(item.issueDate) : ""}</td>
-    </tr>`;
+    const isExpired = window.registryCommon.isExpired(item.issueDate);
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
+    const dateColor = isExpired ? "#e74c3c" : "#27ae60";
+    
+    html += `
+      <tr style="background: ${bgColor};">
+        <td style="border: 1px solid #dee2e6; padding: 5px;">${item.brand || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px;">${item.type || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px;">${displayMethod}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px; text-align: center;">${item.diameter || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px;">${item.standard || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px;">${item.manufacturer || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 5px; text-align: center; color: ${dateColor}; font-weight: bold;">${item.issueDate ? window.registryCommon.formatDate(item.issueDate) : "-"}</td>
+      </tr>
+    `;
   });
 
-  html += `</tbody></table>`;
+  html += `
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; font-size: 9px; color: #7f8c8d; text-align: right;">
+      Сформировано: ${new Date().toLocaleString("ru-RU")}
+    </div>
+  `;
   element.innerHTML = html;
 
   const opt = {
-    margin: 0.5,
+    margin: [10, 8, 10, 8],
     filename: `проволока_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, letterRendering: true },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    html2canvas: { 
+      scale: 2, 
+      useCORS: true,
+      letterRendering: true 
+    },
+    jsPDF: { 
+      unit: "mm", 
+      format: "a4", 
+      orientation: "landscape" 
+    },
   };
 
   html2pdf()

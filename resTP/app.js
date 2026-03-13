@@ -36,7 +36,7 @@ function initElements() {
   window.screenResults = document.getElementById("results-section");
   window.weldingTypeSelect = document.getElementById("weldingType");
   window.confirmBtn = document.getElementById("confirmBtn");
-  window.backToSearchBtn2 = document.getElementById("backToSearchBtn2");
+  window.backToSelectBtn = document.getElementById("backToSelectBtn");
   window.noResults = document.getElementById("noResults");
   window.tableBody = document.getElementById("tableBody");
   window.generatePdfBtn = document.getElementById("generatePdfBtn");
@@ -108,12 +108,6 @@ function initEventListeners() {
 
   if (backToSelectBtn) {
     backToSelectBtn.addEventListener("click", () => {
-      window.registryCommon.showSection("select");
-    });
-  }
-
-  if (backToSearchBtn2) {
-    backToSearchBtn2.addEventListener("click", () => {
       window.registryCommon.showSection("select");
     });
   }
@@ -294,97 +288,108 @@ function generatePDF() {
     return;
   }
 
+  // Проверка доступности библиотеки html2pdf
+  if (typeof html2pdf === "undefined") {
+    window.registryCommon.showNotification(
+      "Ошибка: библиотека PDF не загружена. Проверьте подключение к интернету.",
+      "error",
+    );
+    console.error("html2pdf не доступен");
+    return;
+  }
+
   const originalText = generatePdfBtn.innerHTML;
   generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   generatePdfBtn.disabled = true;
 
-  setTimeout(() => {
-    try {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+  const selectedType = weldingTypeSelect.options[weldingTypeSelect.selectedIndex].text;
+  
+  // Создаем HTML элемент для PDF
+  const element = document.createElement("div");
+  element.style.padding = "20px";
+  element.style.fontFamily = "Arial, sans-serif";
+  element.style.fontSize = "12px";
+  element.style.lineHeight = "1.4";
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(16);
-      doc.text("РЕЕСТР ТЕХПРОЦЕССОВ", 105, 15, null, null, "center");
+  let html = `
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h2 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">РЕЕСТР ТЕХПРОЦЕССОВ СВАРКИ</h2>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #555;">
+        <span><strong>Тип сварки:</strong> ${selectedType}</span>
+        <span><strong>Дата:</strong> ${new Date().toLocaleDateString("ru-RU")}</span>
+        <span><strong>Всего записей:</strong> ${currentFilteredData.length}</span>
+      </div>
+    </div>
+    <table style="border-collapse: collapse; width: 100%; font-size: 10px;">
+      <thead>
+        <tr style="background: #9b59b6; color: white;">
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: left; font-weight: bold;">№ Сертификата</th>
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: left; font-weight: bold;">Аббр.</th>
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: left; font-weight: bold;">Группа</th>
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: left; font-weight: bold;">Действует до</th>
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: left; font-weight: bold;">Материал</th>
+          <th style="border: 1px solid #7d3c98; padding: 8px; text-align: center; font-weight: bold;">Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  
+  currentFilteredData.forEach((item, index) => {
+    const isValid = !window.registryCommon.isExpired(item.validUntil);
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
+    html += `
+      <tr style="background: ${bgColor};">
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.cert || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.groupAbr || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.group || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.validUntil ? window.registryCommon.formatDate(item.validUntil) : "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.material || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center; color: ${isValid ? "#27ae60" : "#e74c3c"}; font-weight: bold;">${isValid ? "Действует" : "Просрочен"}</td>
+      </tr>
+    `;
+  });
+  
+  html += `
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; font-size: 9px; color: #7f8c8d; text-align: right;">
+      Сформировано: ${new Date().toLocaleString("ru-RU")}
+    </div>
+  `;
+  
+  element.innerHTML = html;
 
-      doc.setFontSize(11);
-      const selectedType =
-        weldingTypeSelect.options[weldingTypeSelect.selectedIndex].text;
-      doc.text(`Тип сварки: ${selectedType}`, 20, 25);
-      doc.text(
-        `Дата генерации: ${new Date().toLocaleDateString("ru-RU")}`,
-        20,
-        32,
-      );
-      doc.text(`Всего записей: ${currentFilteredData.length}`, 150, 32);
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: `техпроцессы_${selectedType.replace(/[^а-яА-Я0-9a-zA-Z]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { 
+      scale: 2,
+      useCORS: true,
+      letterRendering: true
+    },
+    jsPDF: { 
+      unit: "mm", 
+      format: "a4", 
+      orientation: "landscape"
+    },
+  };
 
-      doc.autoTable({
-        head: [
-          [
-            "Сертификат",
-            "Аббревиатура",
-            "Группа",
-            "Действует до",
-            "Материал",
-            "Статус",
-          ],
-        ],
-        body: currentFilteredData.map((item) => {
-          const isValid = !window.registryCommon.isExpired(item.validUntil);
-          return [
-            item.cert || "",
-            item.groupAbr || "",
-            item.group || "",
-            item.validUntil
-              ? window.registryCommon.formatDate(item.validUntil)
-              : "",
-            item.material || "",
-            isValid ? "Действует" : "Просрочен",
-          ];
-        }),
-        startY: 40,
-        theme: "grid",
-        styles: {
-          fontSize: 9,
-          font: "helvetica",
-          cellPadding: 3,
-          overflow: "linebreak",
-          lineWidth: 0.1,
-        },
-        headStyles: {
-          fillColor: [155, 89, 182],
-          textColor: 255,
-          fontStyle: "bold",
-          fontSize: 10,
-        },
-        columnStyles: {
-          0: { cellWidth: 40 },
-          1: { cellWidth: 25 },
-          2: { cellWidth: 35 },
-          3: { cellWidth: 30 },
-          4: { cellWidth: 40 },
-          5: { cellWidth: 25 },
-        },
-        margin: { left: 15, right: 15 },
-      });
-
-      const fileName = `техпроцессы_${selectedType.replace(/[^а-яА-Я0-9]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`;
-      doc.save(fileName);
-
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .then(() => {
       generatePdfBtn.innerHTML = originalText;
       generatePdfBtn.disabled = false;
-
-      window.registryCommon.showNotification(
-        `PDF создан: ${fileName}`,
-        "success",
-      );
-    } catch (error) {
+      window.registryCommon.showNotification("PDF успешно создан", "success");
+    })
+    .catch((error) => {
       console.error("Ошибка генерации PDF:", error);
       generatePdfBtn.innerHTML = originalText;
       generatePdfBtn.disabled = false;
       window.registryCommon.showNotification("Ошибка создания PDF", "error");
-    }
-  }, 800);
+    });
 }
 
 window.techprocessRegistry = {

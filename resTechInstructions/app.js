@@ -163,56 +163,92 @@ function resetSearch() {
 
 function generatePDF() {
   if (currentFilteredData.length === 0) {
-    window.registryCommon.showNotification("Нет данных для PDF", "warning");
+    window.registryCommon.showNotification("Нет данных для PDF.", "warning");
     return;
   }
   if (typeof html2pdf === "undefined") {
     window.registryCommon.showNotification(
-      "Ошибка: библиотека PDF не загружена",
+      "Ошибка: библиотека PDF не загружена. Проверьте подключение к интернету.",
       "error",
     );
+    console.error("html2pdf не доступен");
     return;
   }
   const originalText = generatePdfBtn.innerHTML;
   generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   generatePdfBtn.disabled = true;
 
+  // Создаем HTML элемент для PDF
   const element = document.createElement("div");
   element.style.padding = "20px";
   element.style.fontFamily = "Arial, sans-serif";
+  element.style.fontSize = "12px";
+  element.style.lineHeight = "1.4";
 
   let html = `
-    <h2 style="text-align:center;">Реестр технологических инструкций</h2>
-    <p>Дата: ${new Date().toLocaleDateString("ru-RU")}</p>
-    <p>Всего записей: ${currentFilteredData.length}</p>
-    <table border="1" cellpadding="5" style="border-collapse: collapse; width:100%;">
-      <thead style="background:#27ae60; color:white;">
-        <tr>
-          <th>№ ТИ</th><th>Год</th><th>Наименование</th><th>Статус</th><th>Место</th><th>Комментарии</th>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h2 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">РЕЕСТР ТЕХНОЛОГИЧЕСКИХ ИНСТРУКЦИЙ</h2>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #555;">
+        <span><strong>Дата:</strong> ${new Date().toLocaleDateString("ru-RU")}</span>
+        <span><strong>Всего записей:</strong> ${currentFilteredData.length}</span>
+      </div>
+    </div>
+    <table style="border-collapse: collapse; width: 100%; font-size: 9px;">
+      <thead>
+        <tr style="background: #27ae60; color: white;">
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">№ ТИ</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Год</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: left; font-weight: bold;">Наименование</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Статус</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: left; font-weight: bold;">Место хранения</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: left; font-weight: bold;">Комментарии</th>
         </tr>
       </thead>
       <tbody>
   `;
-  currentFilteredData.forEach((item) => {
-    html += `<tr>
-      <td>${item.number}</td>
-      <td>${item.year}</td>
-      <td>${item.name}</td>
-      <td>${item.status}</td>
-      <td>${item.location}</td>
-      <td>${item.comments}</td>
-    </tr>`;
+  
+  currentFilteredData.forEach((item, index) => {
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
+    const isActive = item.status && item.status.toLowerCase().includes("действует");
+    const statusColor = isActive ? "#27ae60" : "#e74c3c";
+    
+    html += `
+      <tr style="background: ${bgColor};">
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.number || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.year || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.name || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center; color: ${statusColor}; font-weight: bold;">${item.status || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.location || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.comments || "-"}</td>
+      </tr>
+    `;
   });
-  html += `</tbody></table>`;
+  
+  html += `
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; font-size: 9px; color: #7f8c8d; text-align: right;">
+      Сформировано: ${new Date().toLocaleString("ru-RU")}
+    </div>
+  `;
   element.innerHTML = html;
 
   const opt = {
-    margin: 0.5,
-    filename: `tech_instructions_${new Date().toISOString().slice(0, 10)}.pdf`,
+    margin: [10, 8, 10, 8],
+    filename: `тех_инструкции_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+    html2canvas: { 
+      scale: 2,
+      useCORS: true,
+      letterRendering: true
+    },
+    jsPDF: { 
+      unit: "mm", 
+      format: "a4", 
+      orientation: "landscape" 
+    },
   };
+  
   html2pdf()
     .set(opt)
     .from(element)

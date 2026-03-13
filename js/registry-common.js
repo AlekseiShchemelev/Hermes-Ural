@@ -308,6 +308,34 @@
       const moduleGetter = moduleMap[moduleName];
       return moduleGetter ? typeof moduleGetter() !== "undefined" : false;
     },
+
+    /**
+     * Переключение мобильного меню
+     */
+    toggleMobileMenu() {
+      const sidebar = document.querySelector('.admin-sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const toggle = document.getElementById('mobileMenuToggle');
+      
+      if (!sidebar) return;
+      
+      sidebar.classList.toggle('mobile-open');
+      if (overlay) overlay.classList.toggle('active');
+      
+      // Меняем иконку
+      if (toggle) {
+        const icon = toggle.querySelector('i');
+        if (icon) {
+          if (sidebar.classList.contains('mobile-open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+          } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          }
+        }
+      }
+    },
   };
 
   // Экспортируем модуль глобально
@@ -325,5 +353,10 @@
   // Функция для перехода на главную (обновлена)
   global.goToMain = function () {
     window.location.href = "../index.html";
+  };
+
+  // Функция для переключения мобильного меню
+  global.toggleMobileMenu = function () {
+    RegistryCommon.toggleMobileMenu();
   };
 })(window);

@@ -308,6 +308,11 @@ function showSection(sectionName) {
     } else if (sectionName === "overview") {
       updateStats();
     }
+    
+    // Обновляем статистику при переключении типов данных
+    if (currentDataType) {
+      updateStats();
+    }
   }
 }
 
@@ -501,6 +506,8 @@ function updateStats() {
   updateWeldersStats();
   updateSpecialistsStats();
   updateTechprocessStats();
+  updateTechInstructionsStats();
+  updateWeldingEquipmentStats();
 }
 
 function updateWireStats() {
@@ -573,9 +580,62 @@ function updateTechprocessStats() {
   setText("techprocess-expired-count", expired);
 }
 
+function updateTechInstructionsStats() {
+  const total = techInstructionsData.length;
+  const active = techInstructionsData.filter(item => 
+    item.status && item.status.toLowerCase().includes("действует")
+  ).length;
+  const cancelled = techInstructionsData.filter(item => 
+    item.status && !item.status.toLowerCase().includes("действует")
+  ).length;
+
+  setText("techInstructions-total-count", total);
+  setText("techInstructions-active-count", active);
+  setText("techInstructions-cancelled-count", cancelled);
+}
+
+function updateWeldingEquipmentStats() {
+  const total = weldingEquipmentData.length;
+  
+  let active = 0;
+  let expired = 0;
+  
+  weldingEquipmentData.forEach((item) => {
+    if (window.registryCommon && window.registryCommon.isExpired(item.expiryDate)) {
+      expired++;
+    } else {
+      active++;
+    }
+  });
+
+  setText("weldingEquipment-total-count", total);
+  setText("weldingEquipment-active-count", active);
+  setText("weldingEquipment-expired-count", expired);
+}
+
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value ?? "—";
+}
+
+// ========== МОБИЛЬНОЕ МЕНЮ ==========
+function toggleMobileMenu() {
+  const sidebar = document.querySelector('.admin-sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle = document.getElementById('mobileMenuToggle');
+  
+  sidebar.classList.toggle('mobile-open');
+  overlay.classList.toggle('active');
+  
+  // Меняем иконку
+  const icon = toggle.querySelector('i');
+  if (sidebar.classList.contains('mobile-open')) {
+    icon.classList.remove('fa-bars');
+    icon.classList.add('fa-times');
+  } else {
+    icon.classList.remove('fa-times');
+    icon.classList.add('fa-bars');
+  }
 }
 
 // ========== МОДАЛЬНОЕ ОКНО ПРОСРОЧЕННЫХ ==========
@@ -586,11 +646,30 @@ function showExpiredModal(dataType) {
   if (!modal || !listContainer) return;
   
   let expiredItems = [];
+  let title = "";
   
   if (dataType === "wire") {
+    title = "Просроченная проволока";
     expiredItems = wireData.filter(item => 
       window.registryCommon && window.registryCommon.isExpired(item.issueDate)
-    );
+    ).map(item => ({
+      name: item.brand || "—",
+      detail: `${item.diameter || "—"} мм`
+    }));
+  } else if (dataType === "equipment") {
+    title = "Просроченное оборудование";
+    expiredItems = weldingEquipmentData.filter(item => 
+      window.registryCommon && window.registryCommon.isExpired(item.expiryDate)
+    ).map(item => ({
+      name: item.name || "—",
+      detail: item.equipmentSN || "—"
+    }));
+  }
+  
+  // Обновляем заголовок модального окна
+  const modalHeader = modal.querySelector(".modal-header h3");
+  if (modalHeader) {
+    modalHeader.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${title}`;
   }
   
   if (expiredItems.length === 0) {
@@ -603,8 +682,8 @@ function showExpiredModal(dataType) {
   } else {
     listContainer.innerHTML = expiredItems.map(item => `
       <div class="expired-item">
-        <span class="expired-item-brand">${item.brand || "—"}</span>
-        <span class="expired-item-diameter">${item.diameter || "—"} мм</span>
+        <span class="expired-item-brand">${item.name}</span>
+        <span class="expired-item-diameter">${item.detail}</span>
       </div>
     `).join("");
   }
@@ -628,6 +707,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   window.updateStats = updateStats;
   window.showExpiredModal = showExpiredModal;
   window.closeExpiredModal = closeExpiredModal;
+  window.toggleMobileMenu = toggleMobileMenu;
 
   await loadData();
   selectDataType("wire");

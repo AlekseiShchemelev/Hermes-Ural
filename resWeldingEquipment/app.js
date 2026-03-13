@@ -223,54 +223,93 @@ function resetSearch() {
 
 function generatePDF() {
   if (currentFilteredData.length === 0) {
-    window.registryCommon.showNotification("Нет данных для PDF", "warning");
+    window.registryCommon.showNotification("Нет данных для PDF.", "warning");
     return;
   }
   if (typeof html2pdf === "undefined") {
     window.registryCommon.showNotification(
-      "Ошибка: библиотека PDF не загружена",
+      "Ошибка: библиотека PDF не загружена. Проверьте подключение к интернету.",
       "error",
     );
+    console.error("html2pdf не доступен");
     return;
   }
   const originalText = generatePdfBtn.innerHTML;
   generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   generatePdfBtn.disabled = true;
 
+  // Создаем HTML элемент для PDF
   const element = document.createElement("div");
   element.style.padding = "20px";
   element.style.fontFamily = "Arial, sans-serif";
+  element.style.fontSize = "12px";
+  element.style.lineHeight = "1.4";
 
   let html = `
-    <h2 style="text-align:center;">Реестр сварочного оборудования</h2>
-    <p>Дата: ${new Date().toLocaleDateString("ru-RU")}</p>
-    <p>Всего записей: ${currentFilteredData.length}</p>
-    <table border="1" cellpadding="5" style="border-collapse: collapse; width:100%;">
-      <thead style="background:#27ae60; color:white;">
-        <tr>
-          <th>Способ сварки</th><th>Наименование</th><th>Зав. номер</th><th>Срок действия</th>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h2 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">РЕЕСТР СВАРОЧНОГО ОБОРУДОВАНИЯ</h2>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #555;">
+        <span><strong>Дата:</strong> ${new Date().toLocaleDateString("ru-RU")}</span>
+        <span><strong>Всего записей:</strong> ${currentFilteredData.length}</span>
+      </div>
+    </div>
+    <table style="border-collapse: collapse; width: 100%; font-size: 10px;">
+      <thead>
+        <tr style="background: #27ae60; color: white;">
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: left; font-weight: bold;">Способ сварки</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: left; font-weight: bold;">Наименование</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Зав. номер</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Сертификат НАКС</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Срок действия</th>
+          <th style="border: 1px solid #1e8449; padding: 8px; text-align: center; font-weight: bold;">Статус</th>
         </tr>
       </thead>
       <tbody>
   `;
-  currentFilteredData.forEach((item) => {
-    html += `<tr>
-      <td>${item.method}</td>
-      <td>${item.name}</td>
-      <td>${item.equipmentSN}</td>
-      <td>${item.expiryDate ? window.registryCommon.formatDate(item.expiryDate) : ""}</td>
-    </tr>`;
+  
+  currentFilteredData.forEach((item, index) => {
+    const isExpired = window.registryCommon.isExpired(item.expiryDate);
+    const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
+    const statusText = isExpired ? "Просрочен" : "Действует";
+    const statusColor = isExpired ? "#e74c3c" : "#27ae60";
+    
+    html += `
+      <tr style="background: ${bgColor};">
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.method || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px;">${item.name || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.equipmentSN || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.certNumber || "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.expiryDate ? window.registryCommon.formatDate(item.expiryDate) : "-"}</td>
+        <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center; color: ${statusColor}; font-weight: bold;">${statusText}</td>
+      </tr>
+    `;
   });
-  html += `</tbody></table>`;
+  
+  html += `
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; font-size: 9px; color: #7f8c8d; text-align: right;">
+      Сформировано: ${new Date().toLocaleString("ru-RU")}
+    </div>
+  `;
   element.innerHTML = html;
 
   const opt = {
-    margin: 0.5,
-    filename: `equipment_${new Date().toISOString().slice(0, 10)}.pdf`,
+    margin: [10, 8, 10, 8],
+    filename: `оборудование_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "landscape" },
+    html2canvas: { 
+      scale: 2,
+      useCORS: true,
+      letterRendering: true
+    },
+    jsPDF: { 
+      unit: "mm", 
+      format: "a4", 
+      orientation: "landscape" 
+    },
   };
+  
   html2pdf()
     .set(opt)
     .from(element)
