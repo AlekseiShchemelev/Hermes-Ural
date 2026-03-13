@@ -18,13 +18,21 @@
   
   <style>
     /* Специфичные стили для таблицы проволоки */
-    .registry-table th:first-child { min-width: 200px; }
-    .registry-table th:nth-child(2) { min-width: 120px; }
-    .registry-table th:nth-child(3) { min-width: 180px; }
-    .registry-table th:nth-child(4) { min-width: 80px; }
-    .registry-table th:nth-child(5) { min-width: 150px; }
-    .registry-table th:nth-child(6) { min-width: 150px; }
-    .registry-table th:nth-child(7) { min-width: 120px; }
+    .registry-table th:first-child { min-width: 150px; }
+    .registry-table th:nth-child(2) { min-width: 100px; }
+    .registry-table th:nth-child(3) { min-width: 150px; }
+    .registry-table th:nth-child(4) { min-width: 70px; }
+    .registry-table th:nth-child(5) { min-width: 120px; }
+    .registry-table th:nth-child(6) { min-width: 120px; }
+    .registry-table th:nth-child(7) { min-width: 100px; }
+    
+    /* Мобильная адаптация */
+    @media (max-width: 768px) {
+      .registry-table th,
+      .registry-table td {
+        min-width: auto !important;
+      }
+    }
   </style>
 </head>
 <body class="registry-container">

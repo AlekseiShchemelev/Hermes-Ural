@@ -359,4 +359,22 @@
   global.toggleMobileMenu = function () {
     RegistryCommon.toggleMobileMenu();
   };
+
+  // Инициализация индикаторов скролла для таблиц
+  document.addEventListener('DOMContentLoaded', function() {
+    const tables = document.querySelectorAll('.table-responsive');
+    tables.forEach(table => {
+      // Добавляем класс, если есть горизонтальный скролл
+      const checkScroll = () => {
+        if (table.scrollWidth > table.clientWidth) {
+          table.classList.add('has-scroll');
+        } else {
+          table.classList.remove('has-scroll');
+        }
+      };
+      
+      checkScroll();
+      window.addEventListener('resize', checkScroll);
+    });
+  });
 })(window);

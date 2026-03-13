@@ -14,24 +14,32 @@
     <style>
       .registry-table th:first-child,
       .registry-table td:first-child {
-        min-width: 150px;
+        min-width: 120px;
       } /* № удостоверения */
       .registry-table th:nth-child(2),
       .registry-table td:nth-child(2) {
-        min-width: 200px;
+        min-width: 150px;
       } /* Группа (сокращённо) */
       .registry-table th:nth-child(3),
       .registry-table td:nth-child(3) {
-        min-width: 100px;
+        min-width: 80px;
       } /* Уровень */
       .registry-table th:nth-child(4),
       .registry-table td:nth-child(4) {
-        min-width: 110px;
+        min-width: 100px;
       } /* Действует до */
       .registry-table th:nth-child(5),
       .registry-table td:nth-child(5) {
-        min-width: 150px;
+        min-width: 120px;
       } /* Комментарий */
+      
+      /* Мобильная адаптация */
+      @media (max-width: 768px) {
+        .registry-table th,
+        .registry-table td {
+          min-width: auto !important;
+        }
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </head>

@@ -659,6 +659,35 @@
     height: 64px;
   }
   
+  /* Адаптация таблиц в админке */
+  .table-container {
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .table-responsive {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .admin-table {
+    min-width: 800px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  
+  .admin-table th {
+    font-size: 0.75rem;
+  }
+  
   .header-left h1 {
     font-size: 1.1rem;
   }
@@ -794,6 +823,36 @@
     align-items: flex-start;
     gap: 8px;
   }
+  
+  /* Адаптация таблиц на телефонах */
+  .table-container {
+    margin: 0 -16px;
+    width: calc(100% + 32px);
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .table-responsive {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  
+  .admin-table {
+    min-width: 650px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  .admin-table th {
+    font-size: 0.7rem;
+  }
 }
 
 /* ===== СКРОЛЛБАР ===== */
@@ -814,6 +873,25 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-500);
+}
+
+/* Горизонтальный скролл для таблиц */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: var(--gray-200);
+  border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 /* ===== ФОКУС ДЛЯ ДОСТУПНОСТИ ===== */

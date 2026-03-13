@@ -14,15 +14,23 @@
     <style>
       .registry-table th:first-child,
       .registry-table td:first-child {
-        min-width: 150px;
+        min-width: 120px;
       }
       .registry-table th:nth-child(2),
       .registry-table td:nth-child(2) {
-        min-width: 100px;
+        min-width: 80px;
       }
       .registry-table th:nth-child(3),
       .registry-table td:nth-child(3) {
-        width: auto;
+        min-width: 200px;
+      }
+      
+      /* Мобильная адаптация */
+      @media (max-width: 768px) {
+        .registry-table th,
+        .registry-table td {
+          min-width: auto !important;
+        }
       }
     </style>
   </head>
