@@ -84,14 +84,37 @@ async function loadWireData() {
     }));
 
     console.log("wireData:", wireData);
-    
+
     // Формируем динамические опции диаметров на основе загруженных данных
     buildDiameterOptions();
-    
-    window.registryCommon.showNotification(
-      `Загружено ${wireData.length} записей`,
-      "success",
-    );
+
+    // Показываем уведомление о загрузке с учётом информации о кэше
+    const loadInfo = window.spreadsheetConfig.getLastLoadInfo();
+    if (loadInfo) {
+      if (loadInfo.fromCache) {
+        if (loadInfo.isExpired) {
+          window.registryCommon.showNotification(
+            `Загружено ${wireData.length} записей (кэш устарел - нет интернета)`,
+            "warning",
+          );
+        } else {
+          window.registryCommon.showNotification(
+            `Загружено ${wireData.length} записей (из кэша)`,
+            "info",
+          );
+        }
+      } else {
+        window.registryCommon.showNotification(
+          `Загружено ${wireData.length} записей`,
+          "success",
+        );
+      }
+    } else {
+      window.registryCommon.showNotification(
+        `Загружено ${wireData.length} записей`,
+        "success",
+      );
+    }
   } catch (error) {
     console.error("Ошибка загрузки проволоки:", error);
     wireData = [];
@@ -123,7 +146,7 @@ function initEventListeners() {
         const numB = parseFloat(b.replace(",", "."));
         return numA - numB;
       });
-      
+
       sortedDiameters.forEach((diameter) => {
         const opt = document.createElement("option");
         opt.value = diameter;
@@ -163,8 +186,8 @@ function initNavigation() {
 
 function buildDiameterOptions() {
   diameterOptions = {};
-  
-  wireData.forEach(item => {
+
+  wireData.forEach((item) => {
     if (item.method && item.diameter) {
       if (!diameterOptions[item.method]) {
         diameterOptions[item.method] = new Set();
@@ -172,12 +195,12 @@ function buildDiameterOptions() {
       diameterOptions[item.method].add(item.diameter.trim());
     }
   });
-  
+
   // Преобразуем Set в Array
-  Object.keys(diameterOptions).forEach(method => {
+  Object.keys(diameterOptions).forEach((method) => {
     diameterOptions[method] = Array.from(diameterOptions[method]);
   });
-  
+
   console.log("Динамические опции диаметров:", diameterOptions);
 }
 
@@ -226,7 +249,7 @@ function performSearch() {
     searchBtn.disabled = false;
 
     window.registryCommon.showSection("results");
-    
+
     if (!hasFilters) {
       window.registryCommon.showNotification(
         `Показаны все данные: ${currentFilteredData.length} записей`,
@@ -392,7 +415,8 @@ function generatePDF() {
   }
 
   const originalText = window.generatePdfBtn.innerHTML;
-  window.generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
+  window.generatePdfBtn.innerHTML =
+    '<div class="loading-spinner"></div> Генерация...';
   window.generatePdfBtn.disabled = true;
 
   const filters = getCurrentFiltersText();
@@ -437,7 +461,7 @@ function generatePDF() {
     const isExpired = window.registryCommon.isExpired(item.issueDate);
     const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
     const dateColor = isExpired ? "#e74c3c" : "#27ae60";
-    
+
     html += `
       <tr style="background: ${bgColor};">
         <td style="border: 1px solid #dee2e6; padding: 5px;">${item.brand || "-"}</td>
@@ -464,15 +488,15 @@ function generatePDF() {
     margin: [10, 8, 10, 8],
     filename: `проволока_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { 
-      scale: 2, 
+    html2canvas: {
+      scale: 2,
       useCORS: true,
-      letterRendering: true 
+      letterRendering: true,
     },
-    jsPDF: { 
-      unit: "mm", 
-      format: "a4", 
-      orientation: "landscape" 
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "landscape",
     },
   };
 

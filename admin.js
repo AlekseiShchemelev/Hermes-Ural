@@ -51,7 +51,17 @@ async function loadData() {
 
     console.log("Все данные загружены");
     updateStats();
-    if (typeof window.registryCommon !== "undefined") {
+
+    // Уведомление с учётом кэша
+    const loadInfo = window.spreadsheetConfig.getLastLoadInfo();
+    if (loadInfo && loadInfo.fromCache) {
+      window.registryCommon.showNotification(
+        loadInfo.isExpired
+          ? "Данные загружены (кэш устарел - нет интернета)"
+          : "Данные загружены (из кэша)",
+        loadInfo.isExpired ? "warning" : "info",
+      );
+    } else {
       window.registryCommon.showNotification("Данные загружены", "success");
     }
   } catch (error) {
@@ -88,7 +98,8 @@ async function loadWireData() {
         diameter: row["Diameter"] || row["Диаметр"] || "",
         standard: row["Standard"] || row["ГОСТ/ТУ"] || "",
         manufacturer: row["Manufacturer"] || row["Производитель"] || "",
-        issueDate: row["IssueDate"] || row["НАКС до"] || row["Дата выдачи"] || "",
+        issueDate:
+          row["IssueDate"] || row["НАКС до"] || row["Дата выдачи"] || "",
         certificate: row["Certificate"] || row["Сертификат"] || "",
         description: row["Description"] || row["Описание"] || "",
       };
@@ -308,7 +319,7 @@ function showSection(sectionName) {
     } else if (sectionName === "overview") {
       updateStats();
     }
-    
+
     // Обновляем статистику при переключении типов данных
     if (currentDataType) {
       updateStats();
@@ -347,7 +358,9 @@ function loadWireTable() {
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  const filterMethod = document.getElementById("wire-filter-method") ? document.getElementById("wire-filter-method").value : null;
+  const filterMethod = document.getElementById("wire-filter-method")
+    ? document.getElementById("wire-filter-method").value
+    : null;
   let filtered = filterMethod
     ? wireData.filter((item) => item.method === filterMethod)
     : wireData;
@@ -360,7 +373,8 @@ function loadWireTable() {
 
   filtered.forEach((item) => {
     const row = document.createElement("tr");
-    const isExpired = window.registryCommon && window.registryCommon.isExpired(item.issueDate);
+    const isExpired =
+      window.registryCommon && window.registryCommon.isExpired(item.issueDate);
     row.innerHTML = `
       <td>${item.id}</td>
       <td><strong>${item.brand}</strong></td>
@@ -379,7 +393,9 @@ function loadWeldersTable() {
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  const filterMethod = document.getElementById("welders-filter-method") ? document.getElementById("welders-filter-method").value : null;
+  const filterMethod = document.getElementById("welders-filter-method")
+    ? document.getElementById("welders-filter-method").value
+    : null;
   let allWelders = [];
   Object.entries(weldersData).forEach(([category, welders]) => {
     if (!filterMethod || category === filterMethod) {
@@ -389,7 +405,9 @@ function loadWeldersTable() {
 
   allWelders.forEach((welder) => {
     const row = document.createElement("tr");
-    const isValid = window.registryCommon && !window.registryCommon.isExpired(welder.validUntil);
+    const isValid =
+      window.registryCommon &&
+      !window.registryCommon.isExpired(welder.validUntil);
     row.innerHTML = `
       <td><strong>${welder.fio}</strong></td>
       <td>${welder.stamp}</td>
@@ -409,7 +427,9 @@ function loadSpecialistsTable() {
   Object.entries(specialistsData).forEach(([fio, specialists]) => {
     specialists.forEach((specialist) => {
       const row = document.createElement("tr");
-      const isValid = window.registryCommon && !window.registryCommon.isExpired(specialist.validUntil);
+      const isValid =
+        window.registryCommon &&
+        !window.registryCommon.isExpired(specialist.validUntil);
       row.innerHTML = `
         <td><strong>${fio}</strong></td>
         <td>${specialist.cert}</td>
@@ -427,7 +447,9 @@ function loadTechprocessTable() {
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  const filterMethod = document.getElementById("techprocess-filter-method") ? document.getElementById("techprocess-filter-method").value : null;
+  const filterMethod = document.getElementById("techprocess-filter-method")
+    ? document.getElementById("techprocess-filter-method").value
+    : null;
   let allProcesses = [];
   Object.entries(techprocessData).forEach(([category, processes]) => {
     if (!filterMethod || category === filterMethod) {
@@ -439,7 +461,9 @@ function loadTechprocessTable() {
 
   allProcesses.forEach((process) => {
     const row = document.createElement("tr");
-    const isValid = window.registryCommon && !window.registryCommon.isExpired(process.validUntil);
+    const isValid =
+      window.registryCommon &&
+      !window.registryCommon.isExpired(process.validUntil);
     row.innerHTML = `
       <td>${process.cert}</td>
       <td>${process.groupAbr}</td>
@@ -542,7 +566,11 @@ function updateWeldersStats() {
   Object.values(weldersData).forEach((arr) => {
     total += arr.length;
     arr.forEach((w) => {
-      if (window.registryCommon && window.registryCommon.isExpired(w.validUntil)) expired++;
+      if (
+        window.registryCommon &&
+        window.registryCommon.isExpired(w.validUntil)
+      )
+        expired++;
       else active++;
     });
   });
@@ -559,7 +587,11 @@ function updateSpecialistsStats() {
     total += arr.length;
     arr.forEach((s) => {
       if (s.group === "III уровень") level3++;
-      if (window.registryCommon && window.registryCommon.isExpired(s.validUntil)) expired++;
+      if (
+        window.registryCommon &&
+        window.registryCommon.isExpired(s.validUntil)
+      )
+        expired++;
     });
   });
   setText("specialists-total-count", total);
@@ -573,7 +605,11 @@ function updateTechprocessStats() {
   Object.values(techprocessData).forEach((arr) => {
     total += arr.length;
     arr.forEach((p) => {
-      if (window.registryCommon && window.registryCommon.isExpired(p.validUntil)) expired++;
+      if (
+        window.registryCommon &&
+        window.registryCommon.isExpired(p.validUntil)
+      )
+        expired++;
     });
   });
   setText("techprocess-total-count", total);
@@ -582,11 +618,11 @@ function updateTechprocessStats() {
 
 function updateTechInstructionsStats() {
   const total = techInstructionsData.length;
-  const active = techInstructionsData.filter(item => 
-    item.status && item.status.toLowerCase().includes("действует")
+  const active = techInstructionsData.filter(
+    (item) => item.status && item.status.toLowerCase().includes("действует"),
   ).length;
-  const cancelled = techInstructionsData.filter(item => 
-    item.status && !item.status.toLowerCase().includes("действует")
+  const cancelled = techInstructionsData.filter(
+    (item) => item.status && !item.status.toLowerCase().includes("действует"),
   ).length;
 
   setText("techInstructions-total-count", total);
@@ -596,12 +632,15 @@ function updateTechInstructionsStats() {
 
 function updateWeldingEquipmentStats() {
   const total = weldingEquipmentData.length;
-  
+
   let active = 0;
   let expired = 0;
-  
+
   weldingEquipmentData.forEach((item) => {
-    if (window.registryCommon && window.registryCommon.isExpired(item.expiryDate)) {
+    if (
+      window.registryCommon &&
+      window.registryCommon.isExpired(item.expiryDate)
+    ) {
       expired++;
     } else {
       active++;
@@ -620,21 +659,21 @@ function setText(id, value) {
 
 // ========== МОБИЛЬНОЕ МЕНЮ ==========
 function toggleMobileMenu() {
-  const sidebar = document.querySelector('.admin-sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const toggle = document.getElementById('mobileMenuToggle');
-  
-  sidebar.classList.toggle('mobile-open');
-  overlay.classList.toggle('active');
-  
+  const sidebar = document.querySelector(".admin-sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+  const toggle = document.getElementById("mobileMenuToggle");
+
+  sidebar.classList.toggle("mobile-open");
+  overlay.classList.toggle("active");
+
   // Меняем иконку
-  const icon = toggle.querySelector('i');
-  if (sidebar.classList.contains('mobile-open')) {
-    icon.classList.remove('fa-bars');
-    icon.classList.add('fa-times');
+  const icon = toggle.querySelector("i");
+  if (sidebar.classList.contains("mobile-open")) {
+    icon.classList.remove("fa-bars");
+    icon.classList.add("fa-times");
   } else {
-    icon.classList.remove('fa-times');
-    icon.classList.add('fa-bars');
+    icon.classList.remove("fa-times");
+    icon.classList.add("fa-bars");
   }
 }
 
@@ -642,36 +681,44 @@ function toggleMobileMenu() {
 function showExpiredModal(dataType) {
   const modal = document.getElementById("expired-modal");
   const listContainer = document.getElementById("expired-list");
-  
+
   if (!modal || !listContainer) return;
-  
+
   let expiredItems = [];
   let title = "";
-  
+
   if (dataType === "wire") {
     title = "Просроченная проволока";
-    expiredItems = wireData.filter(item => 
-      window.registryCommon && window.registryCommon.isExpired(item.issueDate)
-    ).map(item => ({
-      name: item.brand || "—",
-      detail: `${item.diameter || "—"} мм`
-    }));
+    expiredItems = wireData
+      .filter(
+        (item) =>
+          window.registryCommon &&
+          window.registryCommon.isExpired(item.issueDate),
+      )
+      .map((item) => ({
+        name: item.brand || "—",
+        detail: `${item.diameter || "—"} мм`,
+      }));
   } else if (dataType === "equipment") {
     title = "Просроченное оборудование";
-    expiredItems = weldingEquipmentData.filter(item => 
-      window.registryCommon && window.registryCommon.isExpired(item.expiryDate)
-    ).map(item => ({
-      name: item.name || "—",
-      detail: item.equipmentSN || "—"
-    }));
+    expiredItems = weldingEquipmentData
+      .filter(
+        (item) =>
+          window.registryCommon &&
+          window.registryCommon.isExpired(item.expiryDate),
+      )
+      .map((item) => ({
+        name: item.name || "—",
+        detail: item.equipmentSN || "—",
+      }));
   }
-  
+
   // Обновляем заголовок модального окна
   const modalHeader = modal.querySelector(".modal-header h3");
   if (modalHeader) {
     modalHeader.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${title}`;
   }
-  
+
   if (expiredItems.length === 0) {
     listContainer.innerHTML = `
       <div class="expired-empty">
@@ -680,14 +727,18 @@ function showExpiredModal(dataType) {
       </div>
     `;
   } else {
-    listContainer.innerHTML = expiredItems.map(item => `
+    listContainer.innerHTML = expiredItems
+      .map(
+        (item) => `
       <div class="expired-item">
         <span class="expired-item-brand">${item.name}</span>
         <span class="expired-item-diameter">${item.detail}</span>
       </div>
-    `).join("");
+    `,
+      )
+      .join("");
   }
-  
+
   modal.classList.remove("hidden");
 }
 

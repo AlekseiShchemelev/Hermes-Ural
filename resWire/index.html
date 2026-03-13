@@ -1,193 +1,250 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Реестр сварочной проволоки - Hermes-Ural</title>
-  
-  <!-- Шрифты -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Стили -->
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/admin.css">
-  <link rel="stylesheet" href="../css/registry-common.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    /* Специфичные стили для таблицы проволоки */
-    .registry-table th:first-child { min-width: 150px; }
-    .registry-table th:nth-child(2) { min-width: 100px; }
-    .registry-table th:nth-child(3) { min-width: 150px; }
-    .registry-table th:nth-child(4) { min-width: 70px; }
-    .registry-table th:nth-child(5) { min-width: 120px; }
-    .registry-table th:nth-child(6) { min-width: 120px; }
-    .registry-table th:nth-child(7) { min-width: 100px; }
-    
-    /* Мобильная адаптация */
-    @media (max-width: 768px) {
-      .registry-table th,
-      .registry-table td {
-        min-width: auto !important;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Реестр сварочной проволоки - Hermes-Ural</title>
+
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+    <link rel="stylesheet" href="../css/registry-common.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* Специфичные стили для таблицы проволоки */
+      .registry-table th:first-child {
+        min-width: 150px;
       }
-    }
-  </style>
-</head>
-<body class="registry-container">
-  <!-- Кнопка мобильного меню -->
-  <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
-    <i class="fas fa-bars"></i>
-  </button>
-  
-  <!-- Оверлей для мобильного меню -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+      .registry-table th:nth-child(2) {
+        min-width: 100px;
+      }
+      .registry-table th:nth-child(3) {
+        min-width: 150px;
+      }
+      .registry-table th:nth-child(4) {
+        min-width: 70px;
+      }
+      .registry-table th:nth-child(5) {
+        min-width: 120px;
+      }
+      .registry-table th:nth-child(6) {
+        min-width: 120px;
+      }
+      .registry-table th:nth-child(7) {
+        min-width: 100px;
+      }
 
-  <div class="admin-container">
-    <!-- Боковая панель -->
-    <aside class="admin-sidebar">
-      <div class="sidebar-header">
-        <h2>
-          <i class="fas fa-circle-dot"></i>
-          <span>Проволока</span>
-        </h2>
-      </div>
-      <nav class="sidebar-nav">
-        <button class="nav-btn active" onclick="window.registryCommon.showSection('select')">
-          <i class="fas fa-search"></i>
-          <span>Поиск</span>
-        </button>
-        <button class="nav-btn" onclick="window.registryCommon.showSection('results')">
-          <i class="fas fa-table"></i>
-          <span>Результаты</span>
-        </button>
-      </nav>
-    </aside>
+      /* Мобильная адаптация */
+      @media (max-width: 768px) {
+        .registry-table th,
+        .registry-table td {
+          min-width: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="registry-container">
+    <!-- Кнопка мобильного меню -->
+    <button
+      class="mobile-menu-toggle"
+      id="mobileMenuToggle"
+      onclick="toggleMobileMenu()"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
 
-    <!-- Основной контент -->
-    <main class="admin-main">
-      <!-- Шапка -->
-      <header class="admin-header">
-        <div class="header-left">
-          <h1>
+    <!-- Оверлей для мобильного меню -->
+    <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="toggleMobileMenu()"
+    ></div>
+
+    <div class="admin-container">
+      <!-- Боковая панель -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-header">
+          <h2>
             <i class="fas fa-circle-dot"></i>
-            Реестр сварочной проволоки
-          </h1>
+            <span>Проволока</span>
+          </h2>
         </div>
-        <div class="header-actions">
-          <button onclick="window.location.href='../index.html'" class="action-btn back-btn">
-            <i class="fas fa-arrow-left"></i>
-            На главную
+        <nav class="sidebar-nav">
+          <button
+            class="nav-btn active"
+            onclick="window.registryCommon.showSection('select')"
+          >
+            <i class="fas fa-search"></i>
+            <span>Поиск</span>
           </button>
-        </div>
-      </header>
+          <button
+            class="nav-btn"
+            onclick="window.registryCommon.showSection('results')"
+          >
+            <i class="fas fa-table"></i>
+            <span>Результаты</span>
+          </button>
+        </nav>
+      </aside>
 
-      <!-- Контент -->
-      <div class="admin-content">
-        <!-- Экран выбора -->
-        <div id="select-section" class="selection-card">
-          <h2><i class="fas fa-filter"></i> Параметры поиска</h2>
-          
-          <div class="form-grid">
-            <div class="form-group">
-              <label>1. Тип проволоки:</label>
-              <select id="wireCategory" class="form-control">
-                <option value="">-- Выберите тип --</option>
-                <option value="carbon">Углеродистая или низколегированная</option>
-                <option value="stainless">Нержавеющая аустенитная</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>2. Способ сварки:</label>
-              <select id="weldingMethod" class="form-control">
-                <option value="">-- Выберите способ --</option>
-                <option value="MP">МП - полуавтоматическая</option>
-                <option value="RAD">РАД - ручная аргонодуговая</option>
-                <option value="AF">АФ - автоматическая под флюсом</option>
-                <option value="RD">РД - ручная дуговая</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>3. Диаметр (мм):</label>
-              <select id="wireDiameter" class="form-control">
-                <option value="">-- Сначала выберите способ сварки --</option>
-              </select>
-            </div>
+      <!-- Основной контент -->
+      <main class="admin-main">
+        <!-- Шапка -->
+        <header class="admin-header">
+          <div class="header-left">
+            <h1>
+              <i class="fas fa-circle-dot"></i>
+              Реестр сварочной проволоки
+            </h1>
           </div>
-          
-          <div class="btn-group">
-            <button id="searchBtn" class="btn-primary">
-              <i class="fas fa-search"></i>
-              Поиск
-            </button>
-            <button id="resetBtn" class="btn-secondary">
-              <i class="fas fa-redo"></i>
-              Сброс
-            </button>
-          </div>
-        </div>
-
-        <!-- Экран результатов -->
-        <div id="results-section" class="hidden">
-          <div class="btn-group" style="margin-bottom: 20px;">
-            <button class="btn-secondary" onclick="window.registryCommon.showSection('select')">
+          <div class="header-actions">
+            <button
+              onclick="window.location.href = '../index.html'"
+              class="action-btn back-btn"
+            >
               <i class="fas fa-arrow-left"></i>
-              Назад к поиску
-            </button>
-            <button id="generatePdfBtn" class="btn-primary btn-success">
-              <i class="fas fa-file-pdf"></i>
-              Скачать PDF
+              На главную
             </button>
           </div>
+        </header>
 
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Результаты поиска</h2>
-              <div id="resultsCount" class="results-counter">
-                <i class="fas fa-list"></i>
-                Найдено: 0 записей
+        <!-- Контент -->
+        <div class="admin-content">
+          <!-- Экран выбора -->
+          <div id="select-section" class="selection-card">
+            <h2><i class="fas fa-filter"></i> Параметры поиска</h2>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>1. Тип проволоки:</label>
+                <select id="wireCategory" class="form-control">
+                  <option value="">-- Выберите тип --</option>
+                  <option value="carbon">
+                    Углеродистая или низколегированная
+                  </option>
+                  <option value="stainless">Нержавеющая аустенитная</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>2. Способ сварки:</label>
+                <select id="weldingMethod" class="form-control">
+                  <option value="">-- Выберите способ --</option>
+                  <option value="MP">МП - полуавтоматическая</option>
+                  <option value="RAD">РАД - ручная аргонодуговая</option>
+                  <option value="AF">АФ - автоматическая под флюсом</option>
+                  <option value="RD">РД - ручная дуговая</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>3. Диаметр (мм):</label>
+                <select id="wireDiameter" class="form-control">
+                  <option value="">-- Сначала выберите способ сварки --</option>
+                </select>
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="registry-table">
-                <thead>
-                  <tr>
-                    <th>Марка проволоки</th>
-                    <th>Тип</th>
-                    <th>Способ сварки</th>
-                    <th>Диаметр, мм</th>
-                    <th>ГОСТ/ТУ</th>
-                    <th>Производитель</th>
-                    <th>НАКС до</th>
-                  </tr>
-                </thead>
-                <tbody id="resultsBody"></tbody>
-              </table>
+
+            <div class="btn-group">
+              <button id="searchBtn" class="btn-primary">
+                <i class="fas fa-search"></i>
+                Поиск
+              </button>
+              <button id="resetBtn" class="btn-secondary">
+                <i class="fas fa-redo"></i>
+                Сброс
+              </button>
             </div>
           </div>
 
-          <!-- Пустое состояние -->
-          <div id="noResults" class="empty-state hidden">
-            <i class="fas fa-search"></i>
-            <h3>Ничего не найдено</h3>
-            <p>Попробуйте изменить параметры поиска</p>
-            <button id="backToSearchBtn2" class="btn-secondary">
-              <i class="fas fa-redo"></i>
-              Вернуться к поиску
-            </button>
+          <!-- Экран результатов -->
+          <div id="results-section" class="hidden">
+            <div class="btn-group" style="margin-bottom: 20px">
+              <button
+                class="btn-secondary"
+                onclick="window.registryCommon.showSection('select')"
+              >
+                <i class="fas fa-arrow-left"></i>
+                Назад к поиску
+              </button>
+              <button id="generatePdfBtn" class="btn-primary btn-success">
+                <i class="fas fa-file-pdf"></i>
+                Скачать PDF
+              </button>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Результаты поиска</h2>
+                <div id="resultsCount" class="results-counter">
+                  <i class="fas fa-list"></i>
+                  Найдено: 0 записей
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="registry-table">
+                  <thead>
+                    <tr>
+                      <th>Марка проволоки</th>
+                      <th>Тип</th>
+                      <th>Способ сварки</th>
+                      <th>Диаметр, мм</th>
+                      <th>ГОСТ/ТУ</th>
+                      <th>Производитель</th>
+                      <th>НАКС до</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resultsBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Пустое состояние -->
+            <div id="noResults" class="empty-state hidden">
+              <i class="fas fa-search"></i>
+              <h3>Ничего не найдено</h3>
+              <p>Попробуйте изменить параметры поиска</p>
+              <button id="backToSearchBtn2" class="btn-secondary">
+                <i class="fas fa-redo"></i>
+                Вернуться к поиску
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
 
-  <!-- Скрипты -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="../config/spreadsheet-config.js"></script>
-  <script src="../js/registry-common.js"></script>
-  <script src="app.js"></script>
-</body>
+    <!-- Скрипты -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="../js/data-manager.js"></script>
+    <script src="../config/spreadsheet-config.js"></script>
+    <script src="../js/registry-common.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Регистрация Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", async () => {
+          try {
+            await navigator.serviceWorker.register("../sw.js");
+            console.log("Service Worker зарегистрирован");
+          } catch (error) {
+            console.error("Ошибка регистрации Service Worker:", error);
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

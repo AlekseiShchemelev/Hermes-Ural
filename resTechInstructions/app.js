@@ -42,10 +42,22 @@ async function loadData() {
     }));
     currentFilteredData = [...instructionsData];
     displayResults(currentFilteredData);
-    window.registryCommon.showNotification(
-      `Загружено ${instructionsData.length} инструкций`,
-      "success",
-    );
+
+    // Уведомление с учётом кэша
+    const loadInfo = window.spreadsheetConfig.getLastLoadInfo();
+    if (loadInfo && loadInfo.fromCache) {
+      window.registryCommon.showNotification(
+        loadInfo.isExpired
+          ? `Загружено ${instructionsData.length} инструкций (кэш устарел - нет интернета)`
+          : `Загружено ${instructionsData.length} инструкций (из кэша)`,
+        loadInfo.isExpired ? "warning" : "info",
+      );
+    } else {
+      window.registryCommon.showNotification(
+        `Загружено ${instructionsData.length} инструкций`,
+        "success",
+      );
+    }
   } catch (error) {
     console.error("Ошибка загрузки:", error);
     window.registryCommon.showNotification("Ошибка загрузки данных", "error");
@@ -206,12 +218,13 @@ function generatePDF() {
       </thead>
       <tbody>
   `;
-  
+
   currentFilteredData.forEach((item, index) => {
     const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
-    const isActive = item.status && item.status.toLowerCase().includes("действует");
+    const isActive =
+      item.status && item.status.toLowerCase().includes("действует");
     const statusColor = isActive ? "#27ae60" : "#e74c3c";
-    
+
     html += `
       <tr style="background: ${bgColor};">
         <td style="border: 1px solid #dee2e6; padding: 6px; text-align: center;">${item.number || "-"}</td>
@@ -223,7 +236,7 @@ function generatePDF() {
       </tr>
     `;
   });
-  
+
   html += `
       </tbody>
     </table>
@@ -237,18 +250,18 @@ function generatePDF() {
     margin: [10, 8, 10, 8],
     filename: `тех_инструкции_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { 
+    html2canvas: {
       scale: 2,
       useCORS: true,
-      letterRendering: true
+      letterRendering: true,
     },
-    jsPDF: { 
-      unit: "mm", 
-      format: "a4", 
-      orientation: "landscape" 
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "landscape",
     },
   };
-  
+
   html2pdf()
     .set(opt)
     .from(element)

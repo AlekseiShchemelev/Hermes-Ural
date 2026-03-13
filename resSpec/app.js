@@ -73,10 +73,21 @@ async function loadSpecialistsData() {
         });
     }
 
-    window.registryCommon.showNotification(
-      "Данные специалистов загружены",
-      "success",
-    );
+    // Уведомление с учётом кэша
+    const loadInfo = window.spreadsheetConfig.getLastLoadInfo();
+    if (loadInfo && loadInfo.fromCache) {
+      window.registryCommon.showNotification(
+        loadInfo.isExpired
+          ? "Данные специалистов загружены (кэш устарел - нет интернета)"
+          : "Данные специалистов загружены (из кэша)",
+        loadInfo.isExpired ? "warning" : "info",
+      );
+    } else {
+      window.registryCommon.showNotification(
+        "Данные специалистов загружены",
+        "success",
+      );
+    }
   } catch (error) {
     console.error("Ошибка загрузки специалистов:", error);
     specialistsData = {};
@@ -291,8 +302,9 @@ function generatePDF() {
   generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   generatePdfBtn.disabled = true;
 
-  const selectedSpecialist = specialistSelect.options[specialistSelect.selectedIndex].text;
-  
+  const selectedSpecialist =
+    specialistSelect.options[specialistSelect.selectedIndex].text;
+
   // Создаем HTML элемент для PDF
   const element = document.createElement("div");
   element.style.padding = "20px";
@@ -321,7 +333,7 @@ function generatePDF() {
       </thead>
       <tbody>
   `;
-  
+
   currentFilteredData.forEach((item, index) => {
     const isValid = !window.registryCommon.isExpired(item.validUntil);
     const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
@@ -335,7 +347,7 @@ function generatePDF() {
       </tr>
     `;
   });
-  
+
   html += `
       </tbody>
     </table>
@@ -343,22 +355,22 @@ function generatePDF() {
       Сформировано: ${new Date().toLocaleString("ru-RU")}
     </div>
   `;
-  
+
   element.innerHTML = html;
 
   const opt = {
     margin: [10, 10, 10, 10],
     filename: `специалисты_${selectedSpecialist.replace(/[^а-яА-Я0-9a-zA-Z]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { 
+    html2canvas: {
       scale: 2,
       useCORS: true,
-      letterRendering: true
+      letterRendering: true,
     },
-    jsPDF: { 
-      unit: "mm", 
-      format: "a4", 
-      orientation: "portrait"
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
     },
   };
 

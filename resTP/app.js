@@ -82,10 +82,22 @@ async function loadTechprocessData() {
       (s, a) => s + a.length,
       0,
     );
-    window.registryCommon.showNotification(
-      `Загружено ${total} техпроцессов`,
-      "success",
-    );
+
+    // Уведомление с учётом кэша
+    const loadInfo = window.spreadsheetConfig.getLastLoadInfo();
+    if (loadInfo && loadInfo.fromCache) {
+      window.registryCommon.showNotification(
+        loadInfo.isExpired
+          ? `Загружено ${total} техпроцессов (кэш устарел - нет интернета)`
+          : `Загружено ${total} техпроцессов (из кэша)`,
+        loadInfo.isExpired ? "warning" : "info",
+      );
+    } else {
+      window.registryCommon.showNotification(
+        `Загружено ${total} техпроцессов`,
+        "success",
+      );
+    }
   } catch (error) {
     console.error("Ошибка загрузки техпроцессов:", error);
     techprocessData = {};
@@ -302,8 +314,9 @@ function generatePDF() {
   generatePdfBtn.innerHTML = '<div class="loading-spinner"></div> Генерация...';
   generatePdfBtn.disabled = true;
 
-  const selectedType = weldingTypeSelect.options[weldingTypeSelect.selectedIndex].text;
-  
+  const selectedType =
+    weldingTypeSelect.options[weldingTypeSelect.selectedIndex].text;
+
   // Создаем HTML элемент для PDF
   const element = document.createElement("div");
   element.style.padding = "20px";
@@ -333,7 +346,7 @@ function generatePDF() {
       </thead>
       <tbody>
   `;
-  
+
   currentFilteredData.forEach((item, index) => {
     const isValid = !window.registryCommon.isExpired(item.validUntil);
     const bgColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
@@ -348,7 +361,7 @@ function generatePDF() {
       </tr>
     `;
   });
-  
+
   html += `
       </tbody>
     </table>
@@ -356,22 +369,22 @@ function generatePDF() {
       Сформировано: ${new Date().toLocaleString("ru-RU")}
     </div>
   `;
-  
+
   element.innerHTML = html;
 
   const opt = {
     margin: [10, 10, 10, 10],
     filename: `техпроцессы_${selectedType.replace(/[^а-яА-Я0-9a-zA-Z]/g, "_")}_${new Date().toISOString().slice(0, 10)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { 
+    html2canvas: {
       scale: 2,
       useCORS: true,
-      letterRendering: true
+      letterRendering: true,
     },
-    jsPDF: { 
-      unit: "mm", 
-      format: "a4", 
-      orientation: "landscape"
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "landscape",
     },
   };
 

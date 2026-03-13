@@ -1,608 +1,728 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Админ панель - Hermes-Ural</title>
-  
-  <!-- Шрифты -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Стили -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="css/registry-common.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <!-- Кнопка мобильного меню -->
-  <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
-    <i class="fas fa-bars"></i>
-  </button>
-  
-  <!-- Оверлей для мобильного меню -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ панель - Hermes-Ural</title>
 
-  <div class="admin-container">
-    <!-- Боковая панель -->
-    <aside class="admin-sidebar">
-      <div class="sidebar-header">
-        <h2>
-          <i class="fas fa-tools"></i>
-          <span>Админ панель</span>
-        </h2>
-      </div>
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-      <nav class="sidebar-nav">
-        <!-- Навигация по типам данных -->
-        <div class="data-type-nav">
-          <h3>Типы данных</h3>
-          <button onclick="selectDataType('wire')" id="wire-btn" class="nav-btn active">
-            <i class="fas fa-circle-dot"></i>
-            <span>Проволока</span>
-          </button>
-          <button onclick="selectDataType('welders')" id="welders-btn" class="nav-btn">
-            <i class="fas fa-user-hard-hat"></i>
-            <span>Сварщики</span>
-          </button>
-          <button onclick="selectDataType('specialists')" id="specialists-btn" class="nav-btn">
-            <i class="fas fa-user-tie"></i>
-            <span>Специалисты</span>
-          </button>
-          <button onclick="selectDataType('techprocess')" id="techprocess-btn" class="nav-btn">
-            <i class="fas fa-cogs"></i>
-            <span>Техпроцессы</span>
-          </button>
-          <button onclick="selectDataType('techInstructions')" id="techInstructions-btn" class="nav-btn">
-            <i class="fas fa-file-alt"></i>
-            <span>Тех. инструкции</span>
-          </button>
-          <button onclick="selectDataType('weldingEquipment')" id="weldingEquipment-btn" class="nav-btn">
-            <i class="fas fa-robot"></i>
-            <span>Оборудование</span>
-          </button>
-        </div>
+    <!-- Стили -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="css/registry-common.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Кнопка мобильного меню -->
+    <button
+      class="mobile-menu-toggle"
+      id="mobileMenuToggle"
+      onclick="toggleMobileMenu()"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
 
-        <!-- Навигация по функциям -->
-        <div class="function-nav">
-          <h3>Функции</h3>
-          <button onclick="showSection('overview')" id="overview-btn" class="nav-btn active">
-            <i class="fas fa-chart-bar"></i>
-            <span>Обзор</span>
-          </button>
-          <button onclick="showSection('manage')" id="manage-btn" class="nav-btn">
-            <i class="fas fa-table"></i>
-            <span>Просмотр данных</span>
-          </button>
-        </div>
-      </nav>
-    </aside>
+    <!-- Оверлей для мобильного меню -->
+    <div
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      onclick="toggleMobileMenu()"
+    ></div>
 
-    <!-- Основной контент -->
-    <main class="admin-main">
-      <!-- Шапка -->
-      <header class="admin-header">
-        <div class="header-left">
-          <h1>
+    <div class="admin-container">
+      <!-- Боковая панель -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-header">
+          <h2>
             <i class="fas fa-tools"></i>
-            Админ панель
-          </h1>
+            <span>Админ панель</span>
+          </h2>
         </div>
-        <div class="header-actions">
-          <button onclick="window.location.href='index.html'" class="action-btn back-btn">
-            <i class="fas fa-home"></i>
-            На главную
+
+        <nav class="sidebar-nav">
+          <!-- Навигация по типам данных -->
+          <div class="data-type-nav">
+            <h3>Типы данных</h3>
+            <button
+              onclick="selectDataType('wire')"
+              id="wire-btn"
+              class="nav-btn active"
+            >
+              <i class="fas fa-circle-dot"></i>
+              <span>Проволока</span>
+            </button>
+            <button
+              onclick="selectDataType('welders')"
+              id="welders-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-user-hard-hat"></i>
+              <span>Сварщики</span>
+            </button>
+            <button
+              onclick="selectDataType('specialists')"
+              id="specialists-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-user-tie"></i>
+              <span>Специалисты</span>
+            </button>
+            <button
+              onclick="selectDataType('techprocess')"
+              id="techprocess-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-cogs"></i>
+              <span>Техпроцессы</span>
+            </button>
+            <button
+              onclick="selectDataType('techInstructions')"
+              id="techInstructions-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-file-alt"></i>
+              <span>Тех. инструкции</span>
+            </button>
+            <button
+              onclick="selectDataType('weldingEquipment')"
+              id="weldingEquipment-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-robot"></i>
+              <span>Оборудование</span>
+            </button>
+          </div>
+
+          <!-- Навигация по функциям -->
+          <div class="function-nav">
+            <h3>Функции</h3>
+            <button
+              onclick="showSection('overview')"
+              id="overview-btn"
+              class="nav-btn active"
+            >
+              <i class="fas fa-chart-bar"></i>
+              <span>Обзор</span>
+            </button>
+            <button
+              onclick="showSection('manage')"
+              id="manage-btn"
+              class="nav-btn"
+            >
+              <i class="fas fa-table"></i>
+              <span>Просмотр данных</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Основной контент -->
+      <main class="admin-main">
+        <!-- Шапка -->
+        <header class="admin-header">
+          <div class="header-left">
+            <h1>
+              <i class="fas fa-tools"></i>
+              Админ панель
+            </h1>
+          </div>
+          <div class="header-actions">
+            <button
+              onclick="window.location.href = 'index.html'"
+              class="action-btn back-btn"
+            >
+              <i class="fas fa-home"></i>
+              На главную
+            </button>
+          </div>
+        </header>
+
+        <!-- Контент -->
+        <div class="admin-content">
+          <!-- ОБЗОР: Проволока -->
+          <div id="wire-overview-section" class="hidden-section active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-circle-dot"></i></div>
+                <div class="stat-content">
+                  <h3>Всего проволоки</h3>
+                  <div class="stat-number" id="wire-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-robot"></i></div>
+                <div class="stat-content">
+                  <h3>МП (Полуавтомат)</h3>
+                  <div class="stat-number" id="wire-mp-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-industry"></i></div>
+                <div class="stat-content">
+                  <h3>АФ (Автомат)</h3>
+                  <div class="stat-number" id="wire-af-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                <div class="stat-content">
+                  <h3>РАД (Аргон)</h3>
+                  <div class="stat-number" id="wire-rad-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-hand-paper"></i></div>
+                <div class="stat-content">
+                  <h3>РД (Ручная)</h3>
+                  <div class="stat-number" id="wire-rd-count">0</div>
+                </div>
+              </div>
+              <div
+                class="stat-card clickable"
+                onclick="showExpiredModal('wire')"
+                style="cursor: pointer"
+              >
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="wire-expired-count">0</div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ОБЗОР: Сварщики -->
+          <div id="welders-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-user-hard-hat"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Всего сварщиков</h3>
+                  <div class="stat-number" id="welders-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-content">
+                  <h3>Активных</h3>
+                  <div class="stat-number" id="welders-active-count">0</div>
+                  <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i> В порядке
+                  </div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченных</h3>
+                  <div class="stat-number" id="welders-expired-count">0</div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ОБЗОР: Специалисты -->
+          <div id="specialists-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                <div class="stat-content">
+                  <h3>Всего специалистов</h3>
+                  <div class="stat-number" id="specialists-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-medal"></i></div>
+                <div class="stat-content">
+                  <h3>III уровень</h3>
+                  <div class="stat-number" id="specialists-level3-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="specialists-expired-count">
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ОБЗОР: Техпроцессы -->
+          <div id="techprocess-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-cogs"></i></div>
+                <div class="stat-content">
+                  <h3>Всего техпроцессов</h3>
+                  <div class="stat-number" id="techprocess-total-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="techprocess-expired-count">
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ОБЗОР: Тех. инструкции -->
+          <div id="techInstructions-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="stat-content">
+                  <h3>Всего инструкций</h3>
+                  <div class="stat-number" id="techInstructions-total-count">
+                    0
+                  </div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-content">
+                  <h3>Действующих</h3>
+                  <div class="stat-number" id="techInstructions-active-count">
+                    0
+                  </div>
+                  <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i> В порядке
+                  </div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="stat-content">
+                  <h3>Отменённых</h3>
+                  <div
+                    class="stat-number"
+                    id="techInstructions-cancelled-count"
+                  >
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Не действуют
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ОБЗОР: Оборудование -->
+          <div id="weldingEquipment-overview-section" class="hidden-section">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-robot"></i></div>
+                <div class="stat-content">
+                  <h3>Всего оборудования</h3>
+                  <div class="stat-number" id="weldingEquipment-total-count">
+                    0
+                  </div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-content">
+                  <h3>Активных</h3>
+                  <div class="stat-number" id="weldingEquipment-active-count">
+                    0
+                  </div>
+                  <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i> В порядке
+                  </div>
+                </div>
+              </div>
+              <div
+                class="stat-card clickable"
+                onclick="showExpiredModal('equipment')"
+                style="cursor: pointer"
+              >
+                <div class="stat-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                  <h3>Просроченные</h3>
+                  <div class="stat-number" id="weldingEquipment-expired-count">
+                    0
+                  </div>
+                  <div class="stat-trend negative">
+                    <i class="fas fa-arrow-down"></i> Требует внимания
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Проволока -->
+          <div id="wire-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2><i class="fas fa-filter"></i> Фильтр данных проволоки</h2>
+              <div class="form-group">
+                <label>Способ сварки:</label>
+                <select
+                  id="wire-filter-method"
+                  class="form-control"
+                  onchange="filterWireRecords()"
+                >
+                  <option value="">Все способы</option>
+                  <option value="MP">МП - полуавтоматическая</option>
+                  <option value="RAD">РАД - ручная аргонодуговая</option>
+                  <option value="AF">АФ - автоматическая под флюсом</option>
+                  <option value="RD">РД - ручная дуговая</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Список проволоки</h2>
+              </div>
+              <div class="table-responsive">
+                <table id="wire-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Марка</th>
+                      <th>Тип</th>
+                      <th>Способ</th>
+                      <th>Диаметр</th>
+                      <th>Производитель</th>
+                      <th>НАКС до</th>
+                    </tr>
+                  </thead>
+                  <tbody id="wire-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Сварщики -->
+          <div id="welders-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2><i class="fas fa-filter"></i> Фильтр сварщиков</h2>
+              <div class="form-group">
+                <label>Тип сварки:</label>
+                <select
+                  id="welders-filter-method"
+                  class="form-control"
+                  onchange="filterWeldersRecords()"
+                >
+                  <option value="">Все типы</option>
+                  <option value="AF">Автоматическая сварка</option>
+                  <option value="MP">Полуавтоматическая сварка</option>
+                  <option value="RAD">Аргонодуговая сварка</option>
+                  <option value="RD">Ручная дуговая</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Список сварщиков</h2>
+              </div>
+              <div class="table-responsive">
+                <table id="welders-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ФИО</th>
+                      <th>Клеймо</th>
+                      <th>Толщина</th>
+                      <th>Действует до</th>
+                      <th>Материал</th>
+                    </tr>
+                  </thead>
+                  <tbody id="welders-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Специалисты -->
+          <div id="specialists-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2><i class="fas fa-table"></i> Список специалистов</h2>
+            </div>
+
+            <div class="table-container">
+              <div class="table-responsive">
+                <table id="specialists-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ФИО</th>
+                      <th>Сертификат</th>
+                      <th>Группа</th>
+                      <th>Уровень</th>
+                      <th>Действует до</th>
+                    </tr>
+                  </thead>
+                  <tbody id="specialists-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Техпроцессы -->
+          <div id="techprocess-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2><i class="fas fa-filter"></i> Фильтр техпроцессов</h2>
+              <div class="form-group">
+                <label>Способ сварки:</label>
+                <select
+                  id="techprocess-filter-method"
+                  class="form-control"
+                  onchange="filterTechprocessRecords()"
+                >
+                  <option value="">Все способы</option>
+                  <option value="AF">
+                    Автоматическая сварка под слоем флюса
+                  </option>
+                  <option value="MP">Полуавтоматическая сварка</option>
+                  <option value="RAD">Ручная аргонодуговая сварка</option>
+                  <option value="RD">Ручная дуговая сварка</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Список техпроцессов</h2>
+              </div>
+              <div class="table-responsive">
+                <table id="techprocess-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Сертификат</th>
+                      <th>Группа</th>
+                      <th>Материал</th>
+                      <th>Способ сварки</th>
+                      <th>Действует до</th>
+                    </tr>
+                  </thead>
+                  <tbody id="techprocess-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Тех. инструкции -->
+          <div id="techInstructions-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2>
+                <i class="fas fa-file-alt"></i> Технологические инструкции
+              </h2>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Список инструкций</h2>
+              </div>
+              <div class="table-responsive">
+                <table id="techInstructions-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>№ ТИ</th>
+                      <th>Год</th>
+                      <th>Наименование</th>
+                      <th>Статус</th>
+                      <th>Место</th>
+                      <th>Комментарии</th>
+                    </tr>
+                  </thead>
+                  <tbody id="techInstructions-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ТАБЛИЦА: Оборудование -->
+          <div id="weldingEquipment-manage-section" class="hidden-section">
+            <div class="form-card">
+              <h2><i class="fas fa-robot"></i> Сварочное оборудование</h2>
+            </div>
+
+            <div class="table-container">
+              <div class="table-header">
+                <h2><i class="fas fa-table"></i> Список оборудования</h2>
+              </div>
+              <div class="table-responsive">
+                <table id="weldingEquipment-admin-table" class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Наименование</th>
+                      <th>Дата изготовления</th>
+                      <th>Срок действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="weldingEquipment-admin-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Модальное окно для просроченных записей -->
+    <div id="expired-modal" class="modal hidden">
+      <div class="modal-overlay" onclick="closeExpiredModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-exclamation-triangle"></i> Просроченные записи
+          </h3>
+          <button class="modal-close" onclick="closeExpiredModal()">
+            <i class="fas fa-times"></i>
           </button>
         </div>
-      </header>
-
-      <!-- Контент -->
-      <div class="admin-content">
-        <!-- ОБЗОР: Проволока -->
-        <div id="wire-overview-section" class="hidden-section active">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-circle-dot"></i></div>
-              <div class="stat-content">
-                <h3>Всего проволоки</h3>
-                <div class="stat-number" id="wire-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-robot"></i></div>
-              <div class="stat-content">
-                <h3>МП (Полуавтомат)</h3>
-                <div class="stat-number" id="wire-mp-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-industry"></i></div>
-              <div class="stat-content">
-                <h3>АФ (Автомат)</h3>
-                <div class="stat-number" id="wire-af-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-fire"></i></div>
-              <div class="stat-content">
-                <h3>РАД (Аргон)</h3>
-                <div class="stat-number" id="wire-rad-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-hand-paper"></i></div>
-              <div class="stat-content">
-                <h3>РД (Ручная)</h3>
-                <div class="stat-number" id="wire-rd-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card clickable" onclick="showExpiredModal('wire')" style="cursor: pointer;">
-              <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div class="stat-content">
-                <h3>Просроченные</h3>
-                <div class="stat-number" id="wire-expired-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Требует внимания
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="modal-body">
+          <div id="expired-list"></div>
         </div>
-
-        <!-- ОБЗОР: Сварщики -->
-        <div id="welders-overview-section" class="hidden-section">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-user-hard-hat"></i></div>
-              <div class="stat-content">
-                <h3>Всего сварщиков</h3>
-                <div class="stat-number" id="welders-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-              <div class="stat-content">
-                <h3>Активных</h3>
-                <div class="stat-number" id="welders-active-count">0</div>
-                <div class="stat-trend">
-                  <i class="fas fa-arrow-up"></i> В порядке
-                </div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
-              <div class="stat-content">
-                <h3>Просроченных</h3>
-                <div class="stat-number" id="welders-expired-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Требует внимания
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ОБЗОР: Специалисты -->
-        <div id="specialists-overview-section" class="hidden-section">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
-              <div class="stat-content">
-                <h3>Всего специалистов</h3>
-                <div class="stat-number" id="specialists-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-medal"></i></div>
-              <div class="stat-content">
-                <h3>III уровень</h3>
-                <div class="stat-number" id="specialists-level3-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div class="stat-content">
-                <h3>Просроченные</h3>
-                <div class="stat-number" id="specialists-expired-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Требует внимания
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ОБЗОР: Техпроцессы -->
-        <div id="techprocess-overview-section" class="hidden-section">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-cogs"></i></div>
-              <div class="stat-content">
-                <h3>Всего техпроцессов</h3>
-                <div class="stat-number" id="techprocess-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div class="stat-content">
-                <h3>Просроченные</h3>
-                <div class="stat-number" id="techprocess-expired-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Требует внимания
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ОБЗОР: Тех. инструкции -->
-        <div id="techInstructions-overview-section" class="hidden-section">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-              <div class="stat-content">
-                <h3>Всего инструкций</h3>
-                <div class="stat-number" id="techInstructions-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-              <div class="stat-content">
-                <h3>Действующих</h3>
-                <div class="stat-number" id="techInstructions-active-count">0</div>
-                <div class="stat-trend">
-                  <i class="fas fa-arrow-up"></i> В порядке
-                </div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
-              <div class="stat-content">
-                <h3>Отменённых</h3>
-                <div class="stat-number" id="techInstructions-cancelled-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Не действуют
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ОБЗОР: Оборудование -->
-        <div id="weldingEquipment-overview-section" class="hidden-section">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-robot"></i></div>
-              <div class="stat-content">
-                <h3>Всего оборудования</h3>
-                <div class="stat-number" id="weldingEquipment-total-count">0</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-              <div class="stat-content">
-                <h3>Активных</h3>
-                <div class="stat-number" id="weldingEquipment-active-count">0</div>
-                <div class="stat-trend">
-                  <i class="fas fa-arrow-up"></i> В порядке
-                </div>
-              </div>
-            </div>
-            <div class="stat-card clickable" onclick="showExpiredModal('equipment')" style="cursor: pointer;">
-              <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-              <div class="stat-content">
-                <h3>Просроченные</h3>
-                <div class="stat-number" id="weldingEquipment-expired-count">0</div>
-                <div class="stat-trend negative">
-                  <i class="fas fa-arrow-down"></i> Требует внимания
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Проволока -->
-        <div id="wire-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-filter"></i> Фильтр данных проволоки</h2>
-            <div class="form-group">
-              <label>Способ сварки:</label>
-              <select id="wire-filter-method" class="form-control" onchange="filterWireRecords()">
-                <option value="">Все способы</option>
-                <option value="MP">МП - полуавтоматическая</option>
-                <option value="RAD">РАД - ручная аргонодуговая</option>
-                <option value="AF">АФ - автоматическая под флюсом</option>
-                <option value="RD">РД - ручная дуговая</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Список проволоки</h2>
-            </div>
-            <div class="table-responsive">
-              <table id="wire-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Марка</th>
-                    <th>Тип</th>
-                    <th>Способ</th>
-                    <th>Диаметр</th>
-                    <th>Производитель</th>
-                    <th>НАКС до</th>
-                  </tr>
-                </thead>
-                <tbody id="wire-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Сварщики -->
-        <div id="welders-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-filter"></i> Фильтр сварщиков</h2>
-            <div class="form-group">
-              <label>Тип сварки:</label>
-              <select id="welders-filter-method" class="form-control" onchange="filterWeldersRecords()">
-                <option value="">Все типы</option>
-                <option value="AF">Автоматическая сварка</option>
-                <option value="MP">Полуавтоматическая сварка</option>
-                <option value="RAD">Аргонодуговая сварка</option>
-                <option value="RD">Ручная дуговая</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Список сварщиков</h2>
-            </div>
-            <div class="table-responsive">
-              <table id="welders-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>ФИО</th>
-                    <th>Клеймо</th>
-                    <th>Толщина</th>
-                    <th>Действует до</th>
-                    <th>Материал</th>
-                  </tr>
-                </thead>
-                <tbody id="welders-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Специалисты -->
-        <div id="specialists-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-table"></i> Список специалистов</h2>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-responsive">
-              <table id="specialists-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>ФИО</th>
-                    <th>Сертификат</th>
-                    <th>Группа</th>
-                    <th>Уровень</th>
-                    <th>Действует до</th>
-                  </tr>
-                </thead>
-                <tbody id="specialists-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Техпроцессы -->
-        <div id="techprocess-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-filter"></i> Фильтр техпроцессов</h2>
-            <div class="form-group">
-              <label>Способ сварки:</label>
-              <select id="techprocess-filter-method" class="form-control" onchange="filterTechprocessRecords()">
-                <option value="">Все способы</option>
-                <option value="AF">Автоматическая сварка под слоем флюса</option>
-                <option value="MP">Полуавтоматическая сварка</option>
-                <option value="RAD">Ручная аргонодуговая сварка</option>
-                <option value="RD">Ручная дуговая сварка</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Список техпроцессов</h2>
-            </div>
-            <div class="table-responsive">
-              <table id="techprocess-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>Сертификат</th>
-                    <th>Группа</th>
-                    <th>Материал</th>
-                    <th>Способ сварки</th>
-                    <th>Действует до</th>
-                  </tr>
-                </thead>
-                <tbody id="techprocess-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Тех. инструкции -->
-        <div id="techInstructions-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-file-alt"></i> Технологические инструкции</h2>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Список инструкций</h2>
-            </div>
-            <div class="table-responsive">
-              <table id="techInstructions-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>№ ТИ</th>
-                    <th>Год</th>
-                    <th>Наименование</th>
-                    <th>Статус</th>
-                    <th>Место</th>
-                    <th>Комментарии</th>
-                  </tr>
-                </thead>
-                <tbody id="techInstructions-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ТАБЛИЦА: Оборудование -->
-        <div id="weldingEquipment-manage-section" class="hidden-section">
-          <div class="form-card">
-            <h2><i class="fas fa-robot"></i> Сварочное оборудование</h2>
-          </div>
-          
-          <div class="table-container">
-            <div class="table-header">
-              <h2><i class="fas fa-table"></i> Список оборудования</h2>
-            </div>
-            <div class="table-responsive">
-              <table id="weldingEquipment-admin-table" class="admin-table">
-                <thead>
-                  <tr>
-                    <th>Наименование</th>
-                    <th>Дата изготовления</th>
-                    <th>Срок действия</th>
-                  </tr>
-                </thead>
-                <tbody id="weldingEquipment-admin-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Модальное окно для просроченных записей -->
-  <div id="expired-modal" class="modal hidden">
-    <div class="modal-overlay" onclick="closeExpiredModal()"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3><i class="fas fa-exclamation-triangle"></i> Просроченные записи</h3>
-        <button class="modal-close" onclick="closeExpiredModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="expired-list"></div>
       </div>
     </div>
-  </div>
 
-  <style>
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal.hidden {
-      display: none;
-    }
-    .modal-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      position: relative;
-      background: white;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #e9ecef;
-    }
-    .modal-header h3 {
-      margin: 0;
-      color: #dc3545;
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #6c757d;
-    }
-    .modal-close:hover {
-      color: #dc3545;
-    }
-    .modal-body {
-      padding: 20px;
-      max-height: 60vh;
-      overflow-y: auto;
-    }
-    .expired-item {
-      padding: 12px 15px;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f8f9fa;
-    }
-    .expired-item:last-child {
-      margin-bottom: 0;
-    }
-    .expired-item-brand {
-      font-weight: 600;
-      color: #212529;
-    }
-    .expired-item-diameter {
-      color: #dc3545;
-      font-weight: 500;
-    }
-    .expired-empty {
-      text-align: center;
-      padding: 40px;
-      color: #6c757d;
-    }
-  </style>
+    <style>
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal.hidden {
+        display: none;
+      }
+      .modal-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        position: relative;
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .modal-header h3 {
+        margin: 0;
+        color: #dc3545;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #6c757d;
+      }
+      .modal-close:hover {
+        color: #dc3545;
+      }
+      .modal-body {
+        padding: 20px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .expired-item {
+        padding: 12px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+      }
+      .expired-item:last-child {
+        margin-bottom: 0;
+      }
+      .expired-item-brand {
+        font-weight: 600;
+        color: #212529;
+      }
+      .expired-item-diameter {
+        color: #dc3545;
+        font-weight: 500;
+      }
+      .expired-empty {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+    </style>
 
-  <!-- Скрипты -->
-  <script src="config/spreadsheet-config.js"></script>
-  <script src="js/registry-common.js"></script>
-  <script src="admin.js"></script>
-</body>
+    <!-- Скрипты -->
+    <script src="js/data-manager.js"></script>
+    <script src="config/spreadsheet-config.js"></script>
+    <script src="js/registry-common.js"></script>
+    <script src="admin.js"></script>
+
+    <!-- Регистрация Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", async () => {
+          try {
+            await navigator.serviceWorker.register("sw.js");
+          } catch (error) {
+            console.error("Ошибка регистрации Service Worker:", error);
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

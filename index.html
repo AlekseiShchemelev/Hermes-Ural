@@ -1,90 +1,140 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Реестр Hermes-Ural</title>
-  
-  <!-- Шрифты -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Стили -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <div class="app-container">
-    <div class="welcome-screen">
-      <!-- Логотип -->
-      <div class="welcome-header">
-        <div class="logo-container">
-          <div class="logo-icon">
-            <i class="fas fa-wrench"></i>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Реестр Hermes-Ural</title>
+
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="welcome-screen">
+        <!-- Логотип -->
+        <div class="welcome-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <i class="fas fa-wrench"></i>
+            </div>
+            <h1 class="logo-text">Hermes-Ural</h1>
           </div>
-          <h1 class="logo-text">Hermes-Ural</h1>
+          <p class="welcome-subtitle">
+            Система управления сварочными реестрами
+          </p>
         </div>
-        <p class="welcome-subtitle">Система управления сварочными реестрами</p>
-      </div>
 
-      <!-- Карточка выбора -->
-      <div class="selection-card">
-        <div class="selection-header">
-          <div class="selection-icon">
-            <i class="fas fa-database"></i>
+        <!-- Карточка выбора -->
+        <div class="selection-card">
+          <div class="selection-header">
+            <div class="selection-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <h2>Выберите реестр</h2>
+            <p>Для просмотра данных (редактирование через Google Таблицы)</p>
           </div>
-          <h2>Выберите реестр</h2>
-          <p>Для просмотра данных (редактирование через Google Таблицы)</p>
+
+          <div class="selection-options">
+            <select id="weldingType" class="modern-select">
+              <option value="">-- Выберите реестр --</option>
+              <option value="resWire">📋 Реестр сварочной проволоки</option>
+              <option value="resTP">📋 Реестр технологии сварки</option>
+              <option value="resWeld">📋 Реестр сварщиков</option>
+              <option value="resSpec">
+                📋 Реестр специалистов сварочного производства
+              </option>
+              <option value="resTechInstructions">
+                📋 Реестр технологических инструкций
+              </option>
+              <option value="resWeldingEquipment">
+                📋 Реестр сварочного оборудования
+              </option>
+            </select>
+
+            <button id="confirmBtn" class="primary-btn">
+              <i class="fas fa-arrow-right"></i>
+              <span>Перейти к реестру</span>
+            </button>
+          </div>
+
+          <div class="admin-access">
+            <p>Управление данными (просмотр)</p>
+            <button
+              onclick="window.location.href = 'admin.html'"
+              class="admin-btn"
+            >
+              <i class="fas fa-cog"></i>
+              <span>Админ панель</span>
+            </button>
+          </div>
         </div>
 
-        <div class="selection-options">
-          <select id="weldingType" class="modern-select">
-            <option value="">-- Выберите реестр --</option>
-            <option value="resWire">📋 Реестр сварочной проволоки</option>
-            <option value="resTP">📋 Реестр технологии сварки</option>
-            <option value="resWeld">📋 Реестр сварщиков</option>
-            <option value="resSpec">📋 Реестр специалистов сварочного производства</option>
-            <option value="resTechInstructions">📋 Реестр технологических инструкций</option>
-            <option value="resWeldingEquipment">📋 Реестр сварочного оборудования</option>
-          </select>
-
-          <button id="confirmBtn" class="primary-btn">
-            <i class="fas fa-arrow-right"></i>
-            <span>Перейти к реестру</span>
-          </button>
-        </div>
-
-        <div class="admin-access">
-          <p>Управление данными (просмотр)</p>
-          <button onclick="window.location.href='admin.html'" class="admin-btn">
-            <i class="fas fa-cog"></i>
-            <span>Админ панель</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Футер -->
-      <div class="footer-info">
-        <div class="info-item">
-          <i class="fas fa-shield-alt"></i>
-          <span>Безопасное хранение данных</span>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-sync-alt"></i>
-          <span>Актуальные сертификаты</span>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-mobile-alt"></i>
-          <span>Адаптивный интерфейс</span>
+        <!-- Футер -->
+        <div class="footer-info">
+          <div class="info-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Безопасное хранение данных</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-sync-alt"></i>
+            <span>Актуальные сертификаты</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-mobile-alt"></i>
+            <span>Адаптивный интерфейс</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Скрипты -->
-  <script src="config/spreadsheet-config.js"></script>
-  <script src="js/registry-common.js"></script>
-  <script src="app.js"></script>
-</body>
+    <!-- Скрипты -->
+    <script src="js/data-manager.js"></script>
+    <script src="config/spreadsheet-config.js"></script>
+    <script src="js/registry-common.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Регистрация Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", async () => {
+          try {
+            const registration =
+              await navigator.serviceWorker.register("/sw.js");
+            console.log("Service Worker зарегистрирован:", registration.scope);
+
+            // Проверяем обновления
+            registration.addEventListener("updatefound", () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener("statechange", () => {
+                if (
+                  newWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
+                  // Новая версия доступна
+                  if (confirm("Доступна новая версия приложения. Обновить?")) {
+                    newWorker.postMessage({ type: "SKIP_WAITING" });
+                    location.reload();
+                  }
+                }
+              });
+            });
+          } catch (error) {
+            console.error("Ошибка регистрации Service Worker:", error);
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
