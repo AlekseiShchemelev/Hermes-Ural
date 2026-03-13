@@ -88,7 +88,7 @@ async function loadWireData() {
         diameter: row["Diameter"] || row["Диаметр"] || "",
         standard: row["Standard"] || row["ГОСТ/ТУ"] || "",
         manufacturer: row["Manufacturer"] || row["Производитель"] || "",
-        issueDate: row["IssueDate"] || row["Дата выдачи"] || "",
+        issueDate: row["IssueDate"] || row["НАКС до"] || row["Дата выдачи"] || "",
         certificate: row["Certificate"] || row["Сертификат"] || "",
         description: row["Description"] || row["Описание"] || "",
       };
@@ -349,12 +349,13 @@ function loadWireTable() {
 
   if (filtered.length === 0) {
     tbody.innerHTML =
-      '<tr><td colspan="6" style="text-align:center;">Нет данных</td></tr>';
+      '<tr><td colspan="7" style="text-align:center;">Нет данных</td></tr>';
     return;
   }
 
   filtered.forEach((item) => {
     const row = document.createElement("tr");
+    const isExpired = window.registryCommon && window.registryCommon.isExpired(item.issueDate);
     row.innerHTML = `
       <td>${item.id}</td>
       <td><strong>${item.brand}</strong></td>
@@ -362,6 +363,7 @@ function loadWireTable() {
       <td>${getMethodDisplay(item.method)}</td>
       <td>${item.diameter}</td>
       <td>${item.manufacturer}</td>
+      <td style="color: ${isExpired ? "red" : "green"}">${item.issueDate}</td>
     `;
     tbody.appendChild(row);
   });
@@ -508,17 +510,15 @@ function updateWireStats() {
   const rad = wireData.filter((w) => w.method === "RAD").length;
   const rd = wireData.filter((w) => w.method === "RD").length;
 
+  // Используем исправленную функцию isExpired из registry-common.js
   let expired = 0;
-  wireData.forEach((w) => {
-    if (w.issueDate) {
-      try {
-        const date = new Date(w.issueDate.split(".").reverse().join("-"));
-        const threeYearsAgo = new Date();
-        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-        if (date < threeYearsAgo) expired++;
-      } catch (e) {}
-    }
-  });
+  if (window.registryCommon && window.registryCommon.isExpired) {
+    wireData.forEach((w) => {
+      if (window.registryCommon.isExpired(w.issueDate)) {
+        expired++;
+      }
+    });
+  }
 
   setText("wire-total-count", total);
   setText("wire-mp-count", mp);
@@ -578,6 +578,45 @@ function setText(id, value) {
   if (el) el.textContent = value ?? "—";
 }
 
+// ========== МОДАЛЬНОЕ ОКНО ПРОСРОЧЕННЫХ ==========
+function showExpiredModal(dataType) {
+  const modal = document.getElementById("expired-modal");
+  const listContainer = document.getElementById("expired-list");
+  
+  if (!modal || !listContainer) return;
+  
+  let expiredItems = [];
+  
+  if (dataType === "wire") {
+    expiredItems = wireData.filter(item => 
+      window.registryCommon && window.registryCommon.isExpired(item.issueDate)
+    );
+  }
+  
+  if (expiredItems.length === 0) {
+    listContainer.innerHTML = `
+      <div class="expired-empty">
+        <i class="fas fa-check-circle" style="font-size: 48px; color: #28a745; margin-bottom: 15px;"></i>
+        <p>Просроченных записей не найдено</p>
+      </div>
+    `;
+  } else {
+    listContainer.innerHTML = expiredItems.map(item => `
+      <div class="expired-item">
+        <span class="expired-item-brand">${item.brand || "—"}</span>
+        <span class="expired-item-diameter">${item.diameter || "—"} мм</span>
+      </div>
+    `).join("");
+  }
+  
+  modal.classList.remove("hidden");
+}
+
+function closeExpiredModal() {
+  const modal = document.getElementById("expired-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 document.addEventListener("DOMContentLoaded", async function () {
   // Делаем функции глобальными
@@ -587,6 +626,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   window.filterWeldersRecords = filterWeldersRecords;
   window.filterTechprocessRecords = filterTechprocessRecords;
   window.updateStats = updateStats;
+  window.showExpiredModal = showExpiredModal;
+  window.closeExpiredModal = closeExpiredModal;
 
   await loadData();
   selectDataType("wire");
