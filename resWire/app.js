@@ -78,7 +78,7 @@ async function loadWireData() {
       diameter: row["Diameter"] || row["Диаметр"] || "",
       standard: row["Standard"] || row["ГОСТ/ТУ"] || "",
       manufacturer: row["Manufacturer"] || row["Производитель"] || "",
-      issueDate: row["IssueDate"] || row["Дата выдачи"] || "",
+      issueDate: row["IssueDate"] || row["НАКС до"] || "",
       certificate: row["Certificate"] || row["Сертификат"] || "",
       description: row["Description"] || row["Описание"] || "",
     }));
@@ -407,7 +407,7 @@ function generatePDF() {
           <th>Диаметр, мм</th>
           <th>ГОСТ/ТУ</th>
           <th>Производитель</th>
-          <th>Дата выдачи</th>
+          <th>НАКС до</th>
         </tr>
       </thead>
       <tbody>

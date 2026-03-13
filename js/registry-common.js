@@ -57,12 +57,31 @@
 
     /**
      * Проверка на истекший срок
+     * Поддерживает форматы: DD.MM.YYYY, DD-MM-YYYY, YYYY-MM-DD
      */
     isExpired(dateStr) {
       if (!dateStr) return false;
       try {
-        const date = new Date(dateStr.split("-").reverse().join("-"));
-        return date < new Date();
+        let date;
+        if (dateStr.includes(".")) {
+          // Формат DD.MM.YYYY
+          const [day, month, year] = dateStr.split(".");
+          date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        } else if (dateStr.includes("-")) {
+          const parts = dateStr.split("-");
+          if (parts[0].length === 4) {
+            // Формат YYYY-MM-DD
+            date = new Date(dateStr);
+          } else {
+            // Формат DD-MM-YYYY
+            date = new Date(parts.reverse().join("-"));
+          }
+        } else {
+          return false;
+        }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date < today;
       } catch (e) {
         return false;
       }
