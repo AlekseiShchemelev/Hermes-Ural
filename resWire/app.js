@@ -2,13 +2,8 @@
 let wireData = [];
 let currentFilteredData = [];
 
-// Диаметры по способам сварки - только диапазоны
-const diameterOptions = {
-  MP: [{ value: "0.8-1.6", text: "0,8-1,6" }],
-  RAD: [{ value: "2.0-3.0", text: "2,0-3,0" }],
-  AF: [{ value: "3.0-4.0", text: "3,0-4,0" }],
-  RD: [{ value: "2.5-5.0", text: "2,5-5,0" }],
-};
+// Динамические опции диаметров на основе фактических данных
+let diameterOptions = {};
 
 // Методы сварки для отображения
 const methodDisplay = {
@@ -89,6 +84,10 @@ async function loadWireData() {
     }));
 
     console.log("wireData:", wireData);
+    
+    // Формируем динамические опции диаметров на основе загруженных данных
+    buildDiameterOptions();
+    
     window.registryCommon.showNotification(
       `Загружено ${wireData.length} записей`,
       "success",
@@ -118,10 +117,17 @@ function initEventListeners() {
       '<option value="">-- Выберите диаметр --</option>';
 
     if (method && diameterOptions[method]) {
-      diameterOptions[method].forEach((option) => {
+      // Сортируем диаметры численно
+      const sortedDiameters = diameterOptions[method].sort((a, b) => {
+        const numA = parseFloat(a.replace(",", "."));
+        const numB = parseFloat(b.replace(",", "."));
+        return numA - numB;
+      });
+      
+      sortedDiameters.forEach((diameter) => {
         const opt = document.createElement("option");
-        opt.value = option.value;
-        opt.textContent = option.text;
+        opt.value = diameter;
+        opt.textContent = diameter;
         wireDiameterSelect.appendChild(opt);
       });
     }
@@ -155,18 +161,33 @@ function initNavigation() {
   });
 }
 
+function buildDiameterOptions() {
+  diameterOptions = {};
+  
+  wireData.forEach(item => {
+    if (item.method && item.diameter) {
+      if (!diameterOptions[item.method]) {
+        diameterOptions[item.method] = new Set();
+      }
+      diameterOptions[item.method].add(item.diameter.trim());
+    }
+  });
+  
+  // Преобразуем Set в Array
+  Object.keys(diameterOptions).forEach(method => {
+    diameterOptions[method] = Array.from(diameterOptions[method]);
+  });
+  
+  console.log("Динамические опции диаметров:", diameterOptions);
+}
+
 function performSearch() {
   const wireCategory = wireCategorySelect.value.trim();
   const weldingMethod = weldingMethodSelect.value.trim();
   const wireDiameter = wireDiameterSelect.value.trim();
 
-  if (!wireCategory || !weldingMethod || !wireDiameter) {
-    window.registryCommon.showNotification(
-      "Пожалуйста, заполните все фильтры поиска.",
-      "warning",
-    );
-    return;
-  }
+  // Если фильтры не выбраны - показываем все данные
+  const hasFilters = wireCategory || weldingMethod || wireDiameter;
 
   const originalText = searchBtn.innerHTML;
   searchBtn.innerHTML = '<div class="loading-spinner"></div> Поиск...';
@@ -189,13 +210,11 @@ function performSearch() {
       const categoryMatch = !wireCategory || itemCategory === wireCategory;
       const methodMatch = !weldingMethod || item.method === weldingMethod;
 
-      let diameterMatch = false;
+      let diameterMatch = true; // По умолчанию true, если диаметр не выбран
       if (item.diameter && wireDiameter) {
         const itemDiameter = parseFloat(item.diameter.replace(",", "."));
-        if (wireDiameter.includes("-")) {
-          const [min, max] = wireDiameter.split("-").map(Number);
-          diameterMatch = itemDiameter >= min && itemDiameter <= max;
-        }
+        const searchDiameter = parseFloat(wireDiameter.replace(",", "."));
+        diameterMatch = Math.abs(itemDiameter - searchDiameter) < 0.001; // Точное совпадение
       }
 
       return categoryMatch && methodMatch && diameterMatch;
@@ -207,6 +226,13 @@ function performSearch() {
     searchBtn.disabled = false;
 
     window.registryCommon.showSection("results");
+    
+    if (!hasFilters) {
+      window.registryCommon.showNotification(
+        `Показаны все данные: ${currentFilteredData.length} записей`,
+        "info",
+      );
+    }
   }, 500);
 }
 
