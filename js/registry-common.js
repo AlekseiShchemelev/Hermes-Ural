@@ -21,10 +21,10 @@
         type === "success"
           ? "check-circle"
           : type === "error"
-          ? "exclamation-circle"
-          : type === "warning"
-          ? "exclamation-triangle"
-          : "info-circle";
+            ? "exclamation-circle"
+            : type === "warning"
+              ? "exclamation-triangle"
+              : "info-circle";
 
       notification.innerHTML = `
             <i class="fas fa-${icon}"></i>
@@ -168,7 +168,7 @@
      */
     showSection(sectionName) {
       console.log(
-        `RegistryCommon: showSection вызвана с параметром: ${sectionName}`
+        `RegistryCommon: showSection вызвана с параметром: ${sectionName}`,
       );
 
       ["select-section", "results-section"].forEach((section) => {
@@ -246,7 +246,7 @@
       } catch (error) {
         console.error(
           `RegistryCommon: Ошибка вызова модуля для секции ${sectionName}:`,
-          error
+          error,
         );
       }
     },
@@ -258,6 +258,117 @@
       const spinner = document.createElement("div");
       spinner.className = "loading-spinner";
       return spinner;
+    },
+
+    /**
+     * Открытие PDF с кэшированием для офлайн-режима
+     * @param {string} url - URL PDF файла (Google Drive ссылка)
+     * @param {string} title - Заголовок для модального окна
+     */
+    async openPDF(url, title) {
+      if (!url) {
+        this.showError("Ссылка на документ не указана");
+        return;
+      }
+
+      // Показываем индикатор загрузки
+      const loadingOverlay = document.createElement("div");
+      loadingOverlay.className = "pdf-loading-overlay";
+      loadingOverlay.innerHTML =
+        '<div class="pdf-loading-spinner"></div><p>Загрузка документа...</p>';
+      document.body.appendChild(loadingOverlay);
+
+      try {
+        // Проверяем, есть ли DataManager
+        if (window.DataManager) {
+          const result = await window.DataManager.loadPDFWithCache(url);
+
+          // Открываем PDF в новом окне или iframe
+          if (result.url) {
+            // Создаём модальное окно для просмотра
+            this.showPDFModal(result.url, title, result.fromCache);
+          }
+        } else {
+          // Fallback - открываем напрямую
+          window.open(url, "_blank");
+        }
+      } catch (error) {
+        console.error("RegistryCommon: Ошибка открытия PDF:", error);
+        this.showError("Не удалось открыть документ: " + error.message);
+      } finally {
+        document.body.removeChild(loadingOverlay);
+      }
+    },
+
+    /**
+     * Показ модального окна с PDF
+     */
+    showPDFModal(pdfUrl, title, fromCache) {
+      // Удаляем существующее модальное окно, если есть
+      const existingModal = document.getElementById("pdfModal");
+      if (existingModal) {
+        document.body.removeChild(existingModal);
+      }
+
+      const modal = document.createElement("div");
+      modal.id = "pdfModal";
+      modal.className = "pdf-modal";
+
+      const cacheIndicator = fromCache
+        ? '<span class="cache-indicator" title="Загружен из кэша (доступен офлайн)">💾</span>'
+        : "";
+
+      modal.innerHTML =
+        '<div class="pdf-modal-content">' +
+        '<div class="pdf-modal-header">' +
+        "<h3>" +
+        (title || "Документ") +
+        "</h3>" +
+        '<div class="pdf-modal-actions">' +
+        cacheIndicator +
+        '<button class="pdf-btn" onclick="window.open(\'' +
+        pdfUrl +
+        "', '_blank')\">" +
+        '<i class="fas fa-external-link-alt"></i> Открыть в новой вкладке' +
+        "</button>" +
+        '<button class="pdf-btn pdf-close-btn" onclick="registryCommon.closePDFModal()">' +
+        '<i class="fas fa-times"></i>' +
+        "</button>" +
+        "</div>" +
+        "</div>" +
+        '<div class="pdf-modal-body">' +
+        '<iframe src="' +
+        pdfUrl +
+        '" frameborder="0"></iframe>' +
+        "</div>" +
+        "</div>";
+
+      document.body.appendChild(modal);
+
+      // Закрытие по клику на фон
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          registryCommon.closePDFModal();
+        }
+      });
+
+      // Закрытие по Escape
+      document.addEventListener("keydown", function escHandler(e) {
+        if (e.key === "Escape") {
+          registryCommon.closePDFModal();
+          document.removeEventListener("keydown", escHandler);
+        }
+      });
+    },
+
+    /**
+     * Закрытие модального окна PDF
+     */
+    closePDFModal() {
+      const modal = document.getElementById("pdfModal");
+      if (modal) {
+        document.body.removeChild(modal);
+      }
     },
 
     /**
@@ -313,25 +424,25 @@
      * Переключение мобильного меню
      */
     toggleMobileMenu() {
-      const sidebar = document.querySelector('.admin-sidebar');
-      const overlay = document.getElementById('sidebarOverlay');
-      const toggle = document.getElementById('mobileMenuToggle');
-      
+      const sidebar = document.querySelector(".admin-sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+      const toggle = document.getElementById("mobileMenuToggle");
+
       if (!sidebar) return;
-      
-      sidebar.classList.toggle('mobile-open');
-      if (overlay) overlay.classList.toggle('active');
-      
+
+      sidebar.classList.toggle("mobile-open");
+      if (overlay) overlay.classList.toggle("active");
+
       // Меняем иконку
       if (toggle) {
-        const icon = toggle.querySelector('i');
+        const icon = toggle.querySelector("i");
         if (icon) {
-          if (sidebar.classList.contains('mobile-open')) {
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-times');
+          if (sidebar.classList.contains("mobile-open")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
           } else {
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
           }
         }
       }
@@ -361,20 +472,20 @@
   };
 
   // Инициализация индикаторов скролла для таблиц
-  document.addEventListener('DOMContentLoaded', function() {
-    const tables = document.querySelectorAll('.table-responsive');
-    tables.forEach(table => {
+  document.addEventListener("DOMContentLoaded", function () {
+    const tables = document.querySelectorAll(".table-responsive");
+    tables.forEach((table) => {
       // Добавляем класс, если есть горизонтальный скролл
       const checkScroll = () => {
         if (table.scrollWidth > table.clientWidth) {
-          table.classList.add('has-scroll');
+          table.classList.add("has-scroll");
         } else {
-          table.classList.remove('has-scroll');
+          table.classList.remove("has-scroll");
         }
       };
-      
+
       checkScroll();
-      window.addEventListener('resize', checkScroll);
+      window.addEventListener("resize", checkScroll);
     });
   });
 })(window);

@@ -1,12 +1,12 @@
 // Глобальные переменные для данных
-let wireData = [];
-let weldersData = {};
-let techprocessData = {};
-let specialistsData = {};
-let techInstructionsData = [];
-let weldingEquipmentData = [];
+var wireData = [];
+var weldersData = {};
+var techprocessData = {};
+var specialistsData = {};
+var techInstructionsData = [];
+var weldingEquipmentData = [];
 
-const DATA_TYPES = {
+var DATA_TYPES = {
   WIRE: "wire",
   WELDERS: "welders",
   SPECIALISTS: "specialists",
@@ -15,9 +15,9 @@ const DATA_TYPES = {
   WELDINGEQUIPMENT: "weldingEquipment",
 };
 
-let currentDataType = null;
+var currentDataType = null;
 
-const METHOD_MAPPING = {
+var METHOD_MAPPING = {
   MP: "mp",
   AF: "af",
   RAD: "rad",
@@ -746,6 +746,109 @@ function closeExpiredModal() {
   const modal = document.getElementById("expired-modal");
   if (modal) modal.classList.add("hidden");
 }
+
+// ========== УПРАВЛЕНИЕ КЭШЕМ ==========
+
+// Обновить все данные (принудительно)
+window.refreshAllData = async function () {
+  if (!navigator.onLine) {
+    if (window.registryCommon) {
+      window.registryCommon.showNotification(
+        "Нет подключения к интернету",
+        "error",
+      );
+    }
+    return;
+  }
+
+  try {
+    if (window.registryCommon) {
+      window.registryCommon.showNotification("Обновление данных...", "info");
+    }
+
+    // Очищаем кэш перед обновлением
+    if (window.DataManager) {
+      await window.DataManager.clearAllCache();
+    }
+
+    // Перезагружаем данные
+    await loadData();
+
+    if (window.registryCommon) {
+      window.registryCommon.showNotification(
+        "Данные успешно обновлены",
+        "success",
+      );
+    }
+  } catch (error) {
+    console.error("Ошибка обновления данных:", error);
+    if (window.registryCommon) {
+      window.registryCommon.showNotification(
+        "Ошибка обновления: " + error.message,
+        "error",
+      );
+    }
+  }
+};
+
+// Сбросить весь кэш
+window.clearAllCache = async function () {
+  console.log("[Admin] Начинаем очистку кэша...");
+
+  try {
+    // 1. Сначала очищаем Service Worker кэш
+    if ("caches" in window) {
+      var cacheNames = await caches.keys();
+      console.log("[Admin] Найдено кэшей:", cacheNames.length);
+      for (var i = 0; i < cacheNames.length; i++) {
+        var deleted = await caches.delete(cacheNames[i]);
+        console.log("[Admin] Кэш", cacheNames[i], "удалён:", deleted);
+      }
+    }
+
+    // 2. Очищаем localStorage
+    if ("localStorage" in window) {
+      localStorage.clear();
+      console.log("[Admin] localStorage очищен");
+    }
+
+    // 3. Очищаем sessionStorage
+    if ("sessionStorage" in window) {
+      sessionStorage.clear();
+      console.log("[Admin] sessionStorage очищен");
+    }
+
+    // 4. Удаляем IndexedDB через DataManager (он сам закроет соединение)
+    if (window.DataManager) {
+      await window.DataManager.clearAllCache();
+    }
+
+    // Очищаем текущие данные
+    wireData = [];
+    weldersData = {};
+    techprocessData = {};
+    specialistsData = {};
+    techInstructionsData = [];
+    weldingEquipmentData = [];
+
+    updateStats();
+
+    if (window.registryCommon) {
+      window.registryCommon.showNotification(
+        "Кэш полностью сброшен. Обновите страницу.",
+        "success",
+      );
+    }
+  } catch (error) {
+    console.error("[Admin] Ошибка сброса кэша:", error);
+    if (window.registryCommon) {
+      window.registryCommon.showNotification(
+        "Ошибка сброса кэша: " + error.message,
+        "error",
+      );
+    }
+  }
+};
 
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 document.addEventListener("DOMContentLoaded", async function () {
